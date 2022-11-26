@@ -17,6 +17,9 @@
 		9BE5F95B292E63D500067053 /* DTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F95A292E63D500067053 /* DTTests.swift */; };
 		9BE5F965292E63D500067053 /* DTUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F964292E63D500067053 /* DTUITests.swift */; };
 		9BE5F967292E63D500067053 /* DTUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F966292E63D500067053 /* DTUITestsLaunchTests.swift */; };
+		9BE67CD42931E3FC001E00B3 /* DTAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE67CD32931E3FC001E00B3 /* DTAnimationView.swift */; };
+		9BE67CD62931E450001E00B3 /* DTPlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE67CD52931E450001E00B3 /* DTPlayView.swift */; };
+		9BE67CD82931E45E001E00B3 /* DTBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE67CD72931E45E001E00B3 /* DTBottomView.swift */; };
 		A3F523B14C7B4DB7A0046021 /* Pods_DT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0965DEA51E33CE0D3BAC2C /* Pods_DT.framework */; };
 		AF2809038E0F8918508C4611 /* Pods_DTTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E81365B963834B31E6A69C9 /* Pods_DTTests.framework */; };
 /* End PBXBuildFile section */
@@ -57,6 +60,9 @@
 		9BE5F960292E63D500067053 /* DTUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DTUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE5F964292E63D500067053 /* DTUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTUITests.swift; sourceTree = "<group>"; };
 		9BE5F966292E63D500067053 /* DTUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		9BE67CD32931E3FC001E00B3 /* DTAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTAnimationView.swift; sourceTree = "<group>"; };
+		9BE67CD52931E450001E00B3 /* DTPlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPlayView.swift; sourceTree = "<group>"; };
+		9BE67CD72931E45E001E00B3 /* DTBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTBottomView.swift; sourceTree = "<group>"; };
 		9FB022B2887EC87A053820D5 /* Pods-DTTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DTTests.release.xcconfig"; path = "Target Support Files/Pods-DTTests/Pods-DTTests.release.xcconfig"; sourceTree = "<group>"; };
 		BC0965DEA51E33CE0D3BAC2C /* Pods_DT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D79802E3765C0E7B6EEAEB86 /* Pods-DTTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DTTests.debug.xcconfig"; path = "Target Support Files/Pods-DTTests/Pods-DTTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -101,8 +107,41 @@
 				D79802E3765C0E7B6EEAEB86 /* Pods-DTTests.debug.xcconfig */,
 				9FB022B2887EC87A053820D5 /* Pods-DTTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		9B8B7E422931E19800943E1B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9BE67CD32931E3FC001E00B3 /* DTAnimationView.swift */,
+				9BE67CD52931E450001E00B3 /* DTPlayView.swift */,
+				9BE67CD72931E45E001E00B3 /* DTBottomView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9B8B7E432931E1A400943E1B /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		9B8B7E442931E1B100943E1B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9B8B7E452931E1C500943E1B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9BE5F949292E63D500067053 /* Main.storyboard */,
+				9BE5F94C292E63D500067053 /* Assets.xcassets */,
+				9BE5F94E292E63D500067053 /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		9BE5F937292E63D400067053 = {
@@ -133,10 +172,11 @@
 				9BE5F943292E63D500067053 /* AppDelegate.swift */,
 				9BE5F945292E63D500067053 /* SceneDelegate.swift */,
 				9BE5F947292E63D500067053 /* ViewController.swift */,
-				9BE5F949292E63D500067053 /* Main.storyboard */,
-				9BE5F94C292E63D500067053 /* Assets.xcassets */,
-				9BE5F94E292E63D500067053 /* LaunchScreen.storyboard */,
 				9BE5F951292E63D500067053 /* Info.plist */,
+				9B8B7E452931E1C500943E1B /* Resources */,
+				9B8B7E442931E1B100943E1B /* Models */,
+				9B8B7E432931E1A400943E1B /* ViewModels */,
+				9B8B7E422931E19800943E1B /* Views */,
 			);
 			path = DT;
 			sourceTree = "<group>";
@@ -408,8 +448,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				9BE5F948292E63D500067053 /* ViewController.swift in Sources */,
+				9BE67CD82931E45E001E00B3 /* DTBottomView.swift in Sources */,
+				9BE67CD62931E450001E00B3 /* DTPlayView.swift in Sources */,
 				9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */,
 				9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */,
+				9BE67CD42931E3FC001E00B3 /* DTAnimationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
