@@ -18,6 +18,7 @@ class DTAnimationView: UIView {
     
     private let dragonImageView = UIImageView()
     private let tigerImageView = UIImageView()
+    private let pokerResultView = DTPokerResultView(frame: .zero)
     private let disposeBag = DisposeBag()
 }
 
@@ -27,7 +28,7 @@ private extension DTAnimationView {
     func setupUI() {
         setupDragonImage()
         setupTigerImage()
-        setupPokerView()
+        setupPokerResultView()
     }
 
     func setupDragonImage() {
@@ -54,8 +55,15 @@ private extension DTAnimationView {
         }
     }
     
-    func setupPokerView() {
-        
+    func setupPokerResultView() {
+        pokerResultView.backgroundColor = .systemPink
+        addSubview(pokerResultView)
+        pokerResultView.snp.makeConstraints {
+            $0.width.equalTo(200.auto())
+            $0.height.equalTo(100.auto())
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview().offset(50.auto())
+        }
     }
 }
 

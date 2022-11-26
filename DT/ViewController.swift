@@ -55,8 +55,6 @@ private extension ViewController {
     }
     
     func setupAnimationView() {
-        animationView.backgroundColor = .yellow
-        
         view.addSubview(animationView)
         animationView.snp.makeConstraints {
             $0.width.equalTo(350.auto())
