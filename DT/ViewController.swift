@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     }
 
     private let titleLabel = UILabel()
+    private let countDownView = DTCountDownView(frame: .zero)
     private let animationView = DTAnimationView(frame: .zero)
     private let playView = DTPlayView(frame: .zero)
     private let bottomView = DTBottomView(frame: .zero)
@@ -30,7 +31,7 @@ private extension ViewController {
     func setupUI() {
         view.backgroundColor = .black
         setupTitle()
-        setupCountDownTimer()
+        setupCountDownView()
         setupAnimationView()
         setupPlayView()
         setupBottomView()
@@ -50,8 +51,13 @@ private extension ViewController {
         }
     }
     
-    func setupCountDownTimer() {
-        
+    func setupCountDownView() {
+        view.addSubview(countDownView)
+        countDownView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom)
+            $0.size.equalTo(40.auto())
+            $0.leading.equalToSuperview().offset(40.auto())
+        }
     }
     
     func setupAnimationView() {

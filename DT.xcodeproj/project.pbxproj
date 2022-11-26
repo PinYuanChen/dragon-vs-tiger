@@ -11,6 +11,9 @@
 		9B8DC37F2931EEA000E81CB3 /* DTPokerResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC37E2931EEA000E81CB3 /* DTPokerResultView.swift */; };
 		9B8DC3812931EF4900E81CB3 /* DTPokerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3802931EF4900E81CB3 /* DTPokerView.swift */; };
 		9B8DC3832931EFB300E81CB3 /* SuitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3822931EFB300E81CB3 /* SuitModel.swift */; };
+		9B8DC3852931FB3400E81CB3 /* DTCountDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3842931FB3400E81CB3 /* DTCountDownView.swift */; };
+		9B8DC3882931FED800E81CB3 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3872931FED800E81CB3 /* String+Ext.swift */; };
+		9B8DC38B2932069600E81CB3 /* DTPlayCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */; };
 		9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F943292E63D500067053 /* AppDelegate.swift */; };
 		9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F945292E63D500067053 /* SceneDelegate.swift */; };
 		9BE5F948292E63D500067053 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F947292E63D500067053 /* ViewController.swift */; };
@@ -53,6 +56,9 @@
 		9B8DC37E2931EEA000E81CB3 /* DTPokerResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPokerResultView.swift; sourceTree = "<group>"; };
 		9B8DC3802931EF4900E81CB3 /* DTPokerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPokerView.swift; sourceTree = "<group>"; };
 		9B8DC3822931EFB300E81CB3 /* SuitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuitModel.swift; sourceTree = "<group>"; };
+		9B8DC3842931FB3400E81CB3 /* DTCountDownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTCountDownView.swift; sourceTree = "<group>"; };
+		9B8DC3872931FED800E81CB3 /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
+		9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPlayCollectionViewCell.swift; sourceTree = "<group>"; };
 		9BE5F940292E63D500067053 /* DT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE5F943292E63D500067053 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9BE5F945292E63D500067053 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -124,6 +130,8 @@
 				9B8DC3802931EF4900E81CB3 /* DTPokerView.swift */,
 				9BE67CD52931E450001E00B3 /* DTPlayView.swift */,
 				9BE67CD72931E45E001E00B3 /* DTBottomView.swift */,
+				9B8DC3842931FB3400E81CB3 /* DTCountDownView.swift */,
+				9B8DC389293205F500E81CB3 /* Cells */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -151,6 +159,22 @@
 				9BE5F94E292E63D500067053 /* LaunchScreen.storyboard */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		9B8DC3862931FEB100E81CB3 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9B8DC3872931FED800E81CB3 /* String+Ext.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		9B8DC389293205F500E81CB3 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		9BE5F937292E63D400067053 = {
@@ -182,6 +206,7 @@
 				9BE5F945292E63D500067053 /* SceneDelegate.swift */,
 				9BE5F947292E63D500067053 /* ViewController.swift */,
 				9BE5F951292E63D500067053 /* Info.plist */,
+				9B8DC3862931FEB100E81CB3 /* Extensions */,
 				9B8B7E452931E1C500943E1B /* Resources */,
 				9B8B7E442931E1B100943E1B /* Models */,
 				9B8B7E432931E1A400943E1B /* ViewModels */,
@@ -464,7 +489,10 @@
 				9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */,
 				9B8DC3832931EFB300E81CB3 /* SuitModel.swift in Sources */,
 				9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */,
+				9B8DC3852931FB3400E81CB3 /* DTCountDownView.swift in Sources */,
 				9BE67CD42931E3FC001E00B3 /* DTAnimationView.swift in Sources */,
+				9B8DC38B2932069600E81CB3 /* DTPlayCollectionViewCell.swift in Sources */,
+				9B8DC3882931FED800E81CB3 /* String+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

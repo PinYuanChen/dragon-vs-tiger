@@ -6,7 +6,10 @@ import RxCocoa
 
 class DTPokerView: UIView {
     
-    let suit = BehaviorRelay<SuitModel>(value: .init(suit: .heart, number: 1))
+    var suit: SuitModel {
+        set { _suit.accept(newValue) }
+        get { _suit.value }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -18,6 +21,7 @@ class DTPokerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let _suit = BehaviorRelay<SuitModel>(value: .init(suit: .heart, number: 1))
     private let cardBackImageView = UIImageView()
     private let suitLabel = UILabel()
     private let numLabel = UILabel()
@@ -72,7 +76,7 @@ private extension DTPokerView {
 // MARK: - Bind
 private extension DTPokerView {
     func bind() {
-        suit
+        _suit
             .withUnretained(self)
             .subscribe(onNext: { owner, suit in
                 let color = suit.suit.color
@@ -81,7 +85,6 @@ private extension DTPokerView {
                 
                 owner.suitLabel.text = suit.suit.title
                 owner.numLabel.text = "\(suit.number)"
-                
             })
             .disposed(by: disposeBag)
     }
