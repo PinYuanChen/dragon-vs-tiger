@@ -1,0 +1,6 @@
+framework module Pods_DT {
+  umbrella header "Pods-DT-umbrella.h"
+
+  export *
+  module * { export * }
+}

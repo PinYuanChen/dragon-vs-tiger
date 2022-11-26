@@ -1,0 +1,6 @@
+framework module AutoInch {
+  umbrella header "AutoInch-umbrella.h"
+
+  export *
+  module * { export * }
+}

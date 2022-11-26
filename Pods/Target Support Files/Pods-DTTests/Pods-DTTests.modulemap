@@ -1,0 +1,6 @@
+framework module Pods_DTTests {
+  umbrella header "Pods-DTTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
