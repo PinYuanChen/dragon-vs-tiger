@@ -14,6 +14,7 @@
 		9B8DC3852931FB3400E81CB3 /* DTCountDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3842931FB3400E81CB3 /* DTCountDownView.swift */; };
 		9B8DC3882931FED800E81CB3 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3872931FED800E81CB3 /* String+Ext.swift */; };
 		9B8DC38B2932069600E81CB3 /* DTPlayCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */; };
+		9B8DC38D2932325200E81CB3 /* FlashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC38C2932325200E81CB3 /* FlashView.swift */; };
 		9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F943292E63D500067053 /* AppDelegate.swift */; };
 		9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F945292E63D500067053 /* SceneDelegate.swift */; };
 		9BE5F948292E63D500067053 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F947292E63D500067053 /* ViewController.swift */; };
@@ -59,6 +60,7 @@
 		9B8DC3842931FB3400E81CB3 /* DTCountDownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTCountDownView.swift; sourceTree = "<group>"; };
 		9B8DC3872931FED800E81CB3 /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
 		9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPlayCollectionViewCell.swift; sourceTree = "<group>"; };
+		9B8DC38C2932325200E81CB3 /* FlashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashView.swift; sourceTree = "<group>"; };
 		9BE5F940292E63D500067053 /* DT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE5F943292E63D500067053 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9BE5F945292E63D500067053 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */,
+				9B8DC38C2932325200E81CB3 /* FlashView.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -481,6 +484,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B8DC38D2932325200E81CB3 /* FlashView.swift in Sources */,
 				9B8DC3812931EF4900E81CB3 /* DTPokerView.swift in Sources */,
 				9BE5F948292E63D500067053 /* ViewController.swift in Sources */,
 				9BE67CD82931E45E001E00B3 /* DTBottomView.swift in Sources */,

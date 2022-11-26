@@ -17,7 +17,8 @@ class DTPlayView: UIView {
     }
 
     private let identifier = "Cell"
-    private let collectionView = UICollectionView()
+    private let collectionView = UICollectionView(frame: .zero,
+                                                  collectionViewLayout: .init())
     private let disposeBag = DisposeBag()
 }
 
@@ -30,9 +31,10 @@ private extension DTPlayView {
 
     func setupCollectionView() {
         let flowLayout: UICollectionViewFlowLayout = .init()
-        flowLayout.scrollDirection = .horizontal
+        flowLayout.scrollDirection = .vertical
         flowLayout.sectionInset = .zero
-        flowLayout.minimumLineSpacing = .zero
+        flowLayout.minimumLineSpacing = 10
+        flowLayout.minimumInteritemSpacing = 10
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -63,6 +65,13 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
         3
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let screenWidth = UIScreen.main.bounds.width - 20
+        let padding: CGFloat = CGFloat(2) * 10
+        let width = screenWidth - padding
+        let cellWidthInt = Int(width) / 3
+        return .init(width: cellWidthInt, height: cellWidthInt)
+    }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView

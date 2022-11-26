@@ -40,12 +40,12 @@ private extension ViewController {
     func setupTitle() {
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
-        titleLabel.font = .boldSystemFont(ofSize: 20.auto())
-        titleLabel.text = "Dragon vs. Tiger"
+        titleLabel.font = .boldSystemFont(ofSize: 24.auto())
+        titleLabel.text = "龍虎"
         
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints {
-            $0.height.equalTo(20.auto())
+            $0.height.equalTo(30.auto())
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.centerX.equalToSuperview()
         }
@@ -71,8 +71,6 @@ private extension ViewController {
     }
     
     func setupPlayView() {
-        playView.backgroundColor = .red
-        
         view.addSubview(playView)
         playView.snp.makeConstraints {
             $0.width.centerX.equalToSuperview()

@@ -49,14 +49,14 @@ private extension DTAnimationView {
         addSubview(tigerImageView)
         
         tigerImageView.snp.makeConstraints {
-            $0.width.equalTo(106.auto())
-            $0.height.equalTo(160.auto())
-            $0.trailing.centerY.equalToSuperview()
+            $0.width.equalTo(120.auto())
+            $0.height.equalTo(180.auto())
+            $0.trailing.centerY.equalToSuperview().inset(20.auto())
         }
     }
     
     func setupPokerResultView() {
-        pokerResultView.backgroundColor = .systemPink
+//        pokerResultView.backgroundColor = .systemPink
         addSubview(pokerResultView)
         pokerResultView.snp.makeConstraints {
             $0.width.equalTo(200.auto())
