@@ -16,6 +16,7 @@
 		9B8DC38B2932069600E81CB3 /* DTPlayCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */; };
 		9B8DC38D2932325200E81CB3 /* FlashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC38C2932325200E81CB3 /* FlashView.swift */; };
 		9B8DC38F293277D800E81CB3 /* ChipInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC38E293277D800E81CB3 /* ChipInfoView.swift */; };
+		9B8DC39329330D9400E81CB3 /* DTViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC39229330D9400E81CB3 /* DTViewModel.swift */; };
 		9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F943292E63D500067053 /* AppDelegate.swift */; };
 		9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F945292E63D500067053 /* SceneDelegate.swift */; };
 		9BE5F948292E63D500067053 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F947292E63D500067053 /* ViewController.swift */; };
@@ -63,6 +64,7 @@
 		9B8DC38A2932069600E81CB3 /* DTPlayCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPlayCollectionViewCell.swift; sourceTree = "<group>"; };
 		9B8DC38C2932325200E81CB3 /* FlashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashView.swift; sourceTree = "<group>"; };
 		9B8DC38E293277D800E81CB3 /* ChipInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipInfoView.swift; sourceTree = "<group>"; };
+		9B8DC39229330D9400E81CB3 /* DTViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTViewModel.swift; sourceTree = "<group>"; };
 		9BE5F940292E63D500067053 /* DT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE5F943292E63D500067053 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9BE5F945292E63D500067053 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		9B8B7E432931E1A400943E1B /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				9B8DC39229330D9400E81CB3 /* DTViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -498,6 +501,7 @@
 				9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */,
 				9B8DC3852931FB3400E81CB3 /* DTCountDownView.swift in Sources */,
 				9B8DC38F293277D800E81CB3 /* ChipInfoView.swift in Sources */,
+				9B8DC39329330D9400E81CB3 /* DTViewModel.swift in Sources */,
 				9BE67CD42931E3FC001E00B3 /* DTAnimationView.swift in Sources */,
 				9B8DC38B2932069600E81CB3 /* DTPlayCollectionViewCell.swift in Sources */,
 				9B8DC3882931FED800E81CB3 /* String+Ext.swift in Sources */,
