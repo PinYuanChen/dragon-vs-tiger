@@ -27,6 +27,8 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
     private let flashView = FlashView(frame: .zero)
     private let titleLabel = UILabel()
     private let oddsLabel = UILabel()
+    private let chipInfoView = ChipInfoView(frame: .zero)
+    private let betMoneyLabel = UILabel()
 }
 
 
@@ -38,9 +40,13 @@ private extension DTPlayCollectionViewCell {
         layer.cornerRadius = 10
         layer.masksToBounds = true
         clipsToBounds = true
+        contentView.backgroundColor = .systemGray.withAlphaComponent(0.3)
+        
         setupFlashView()
         setupTitleLabel()
         setupOddsLabel()
+        setupChipInfoView()
+        setupBetMoneyLabel()
     }
     
     func setupFlashView() {
@@ -70,6 +76,34 @@ private extension DTPlayCollectionViewCell {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(10.auto())
             $0.height.equalTo(20.auto())
+        }
+    }
+    
+    func setupChipInfoView() {
+        contentView.addSubview(chipInfoView)
+        chipInfoView.snp.makeConstraints {
+            $0.width.equalTo(46.auto())
+            $0.bottom.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(4.auto())
+        }
+    }
+    
+    func setupBetMoneyLabel() {
+        betMoneyLabel.layer.borderColor = UIColor.white.cgColor
+        betMoneyLabel.layer.borderWidth = 1
+        betMoneyLabel.backgroundColor = .systemGreen.withAlphaComponent(0.5)
+        betMoneyLabel.textColor = .green
+        betMoneyLabel.layer.cornerRadius = 4.auto()
+        betMoneyLabel.layer.masksToBounds = true
+        betMoneyLabel.textAlignment = .center
+        betMoneyLabel.font = .systemFont(ofSize: 14.auto())
+        betMoneyLabel.text = "5K"
+        
+        contentView.addSubview(betMoneyLabel)
+        betMoneyLabel.snp.makeConstraints {
+            $0.leading.top.equalToSuperview().inset(10.auto())
+            $0.height.equalTo(20.auto())
+            $0.width.equalTo(50.auto())
         }
     }
 }
