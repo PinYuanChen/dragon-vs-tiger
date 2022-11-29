@@ -5,6 +5,9 @@ import RxSwift
 import RxCocoa
 
 class DTPokerResultView: UIView {
+    
+    let showResultWithoutAnimation = PublishRelay<GameResultModel>()
+    let showResultWithAnimation = PublishRelay<GameResultModel>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,6 +53,12 @@ private extension DTPokerResultView {
 // MARK: - Bind
 private extension DTPokerResultView {
     func bind() {
-        
+        showResultWithoutAnimation
+            .withUnretained(self)
+            .subscribe(onNext: { owner, result in
+                owner.dragonPoker.suit = result.dragon
+                owner.tigerPoker.suit = result.tiger
+            })
+            .disposed(by: disposeBag)
     }
 }

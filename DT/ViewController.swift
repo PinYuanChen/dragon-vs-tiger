@@ -11,18 +11,33 @@ import RxCocoa
 import AutoInch
 
 class ViewController: UIViewController {
-
+    
+    let viewModel = DTViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         bind()
+        bind(viewModel: viewModel)
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.input.getLastGameResult()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        invalidate()
+    }
+    
     private let titleLabel = UILabel()
     private let countDownView = DTCountDownView(frame: .zero)
     private let animationView = DTAnimationView(frame: .zero)
     private let playView = DTPlayView(frame: .zero)
     private let bottomView = DTBottomView(frame: .zero)
+    private var timer: Timer?
+    private var countDownNum = 0
     private let disposeBag = DisposeBag()
 }
 
@@ -95,6 +110,55 @@ private extension ViewController {
 private extension ViewController {
     func bind() {
         
+    }
+    
+    func bind(viewModel: DTViewModelPrototype) {
+        
+        viewModel
+            .output
+            .lastGameResult
+            .bind(to: animationView.showResultWithoutAnimation)
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
+            .gameResult
+            .withUnretained(self)
+            .subscribe(onNext: { owner, result in
+                if owner.timer == nil {
+                    owner.countDownNum = 0
+                    owner.timer = Timer.scheduledTimer(
+                        timeInterval: 1.0,
+                        target: owner,
+                        selector: #selector(owner.countDown),
+                        userInfo: nil,
+                        repeats: true
+                    )
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - Private functions
+private extension ViewController {
+    @objc func countDown() {
+        let diff = 10 - countDownNum
+        if diff >= 0 {
+            countDownView.currentTime = diff
+            countDownView.isHidden = false
+            countDownNum += 1
+        } else {
+            invalidate()
+        }
+    }
+    
+    func invalidate() {
+        if timer != nil {
+            timer?.invalidate()
+            timer = nil
+        }
+        countDownView.isHidden = true
     }
 }
 

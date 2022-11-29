@@ -5,6 +5,9 @@ import RxSwift
 import RxCocoa
 
 class DTAnimationView: UIView {
+    
+    let showResultWithoutAnimation = PublishRelay<GameResultModel>()
+    let showResultWithAnimation = PublishRelay<GameResultModel>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -56,7 +59,6 @@ private extension DTAnimationView {
     }
     
     func setupPokerResultView() {
-//        pokerResultView.backgroundColor = .systemPink
         addSubview(pokerResultView)
         pokerResultView.snp.makeConstraints {
             $0.width.equalTo(200.auto())
@@ -70,6 +72,8 @@ private extension DTAnimationView {
 // MARK: - Bind
 private extension DTAnimationView {
     func bind() {
-        
+        showResultWithoutAnimation
+            .bind(to: pokerResultView.showResultWithoutAnimation)
+            .disposed(by: disposeBag)
     }
 }

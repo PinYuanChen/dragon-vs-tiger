@@ -31,6 +31,7 @@
 		9BE67CD82931E45E001E00B3 /* DTBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE67CD72931E45E001E00B3 /* DTBottomView.swift */; };
 		A3F523B14C7B4DB7A0046021 /* Pods_DT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0965DEA51E33CE0D3BAC2C /* Pods_DT.framework */; };
 		AF2809038E0F8918508C4611 /* Pods_DTTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E81365B963834B31E6A69C9 /* Pods_DTTests.framework */; };
+		CD78251C2935F64C00114AA7 /* GameResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD78251B2935F64C00114AA7 /* GameResult.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 		9BE67CD72931E45E001E00B3 /* DTBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTBottomView.swift; sourceTree = "<group>"; };
 		9FB022B2887EC87A053820D5 /* Pods-DTTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DTTests.release.xcconfig"; path = "Target Support Files/Pods-DTTests/Pods-DTTests.release.xcconfig"; sourceTree = "<group>"; };
 		BC0965DEA51E33CE0D3BAC2C /* Pods_DT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD78251B2935F64C00114AA7 /* GameResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameResult.swift; sourceTree = "<group>"; };
 		D79802E3765C0E7B6EEAEB86 /* Pods-DTTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DTTests.debug.xcconfig"; path = "Target Support Files/Pods-DTTests/Pods-DTTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DEAC18784810398BE99720AF /* Pods-DT-DTUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DT-DTUITests.release.xcconfig"; path = "Target Support Files/Pods-DT-DTUITests/Pods-DT-DTUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -154,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				9B8DC3822931EFB300E81CB3 /* SuitModel.swift */,
+				CD78251B2935F64C00114AA7 /* GameResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -494,6 +497,7 @@
 				9B8DC3812931EF4900E81CB3 /* DTPokerView.swift in Sources */,
 				9BE5F948292E63D500067053 /* ViewController.swift in Sources */,
 				9BE67CD82931E45E001E00B3 /* DTBottomView.swift in Sources */,
+				CD78251C2935F64C00114AA7 /* GameResult.swift in Sources */,
 				9B8DC37F2931EEA000E81CB3 /* DTPokerResultView.swift in Sources */,
 				9BE67CD62931E450001E00B3 /* DTPlayView.swift in Sources */,
 				9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */,

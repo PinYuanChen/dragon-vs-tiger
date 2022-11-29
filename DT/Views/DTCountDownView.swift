@@ -25,7 +25,14 @@ class DTCountDownView: UIView {
     private let timeShapeLayer = CAShapeLayer()
     private let timeLabel = UILabel()
     private let time = BehaviorRelay<Int>(value: 0)
+    private let inAnimation = BehaviorRelay<Bool>(value: false)
     private let disposeBag = DisposeBag()
+}
+
+extension DTCountDownView: CAAnimationDelegate {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        inAnimation.accept(false)
+    }
 }
 
 // MARK: - Setup UI
@@ -124,18 +131,25 @@ private extension DTCountDownView {
             .drive(timeShapeLayer.rx.strokeColor)
             .disposed(by: disposeBag)
         
-//        time
-//            .subscribe(onNext: { [weak self] _ in
-//                guard let self = self else { return }
-//                let animation = CABasicAnimation(keyPath: "strokeEnd")
-//                animation.fromValue = Float(time) / 45.0
-//                animation.toValue = 0
-//                animation.duration = CFTimeInterval(time)
-//                animation.delegate = self
-//
-//                self.timeShapeLayer.add(animation, forKey: animation.keyPath)
-//            })
-//            .disposed(by: disposeBag)
+        time
+            .subscribe(onNext: { [weak self] time in
+                guard let self = self else { return }
+                let animation = CABasicAnimation(keyPath: "strokeEnd")
+                animation.fromValue = Float(time) / 10.0
+                animation.toValue = 0
+                animation.duration = CFTimeInterval(time)
+                animation.delegate = self
+
+                self.timeShapeLayer.add(animation, forKey: animation.keyPath)
+            })
+            .disposed(by: disposeBag)
+        
+        inAnimation
+            .filter { !$0 }
+            .map { _ in UIColor.clear.cgColor }
+            .asDriver(onErrorJustReturn: UIColor.clear.cgColor)
+            .drive(timeShapeLayer.rx.strokeColor)
+            .disposed(by: disposeBag)
     }
 }
 
