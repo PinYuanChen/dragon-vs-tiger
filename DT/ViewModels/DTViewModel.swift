@@ -42,14 +42,23 @@ extension DTViewModel: DTViewModelInput {
     func getLastGameResult() {
         let dragon = SuitModel(suit: .club, number: 10)
         let tiger = SuitModel(suit: .diamond, number: 9)
-        _lastGameResult.accept(.init(dragon: dragon,
-                                 tiger: tiger))
+        let result = GameResultModel(dragon: dragon, tiger: tiger)
+        _lastGameResult.accept(result)
+        _gameResult.accept(result)
     }
     
     func getGameResult() {
-        let dragon = SuitModel(suit: .club, number: 10)
-        let tiger = SuitModel(suit: .diamond, number: 9)
+        let dragon = getSuitResult()
+        let tiger = getSuitResult()
         _gameResult.accept(.init(dragon: dragon,
                                  tiger: tiger))
+    }
+}
+
+private extension DTViewModel {
+    func getSuitResult() -> SuitModel {
+        let suit = Suit(rawValue: .random(in: 0...3)) ?? .club
+        let num = Int.random(in: 1...13)
+        return .init(suit: suit, number: num)
     }
 }

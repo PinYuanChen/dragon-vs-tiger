@@ -150,6 +150,9 @@ private extension ViewController {
             countDownNum += 1
         } else {
             invalidate()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.viewModel.input.getGameResult()
+            }
         }
     }
     

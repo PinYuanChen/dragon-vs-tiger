@@ -1,7 +1,7 @@
 
 import UIKit
 
-enum Suit {
+enum Suit: Int {
     case club
     case diamond
     case heart

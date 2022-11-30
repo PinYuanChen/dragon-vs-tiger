@@ -8,7 +8,7 @@ class DTCountDownView: UIView {
     
     var currentTime: Int {
         set { time.accept(newValue) }
-        get { time.value }
+        get { time.value ?? 0 }
     }
     
     override init(frame: CGRect) {
@@ -24,15 +24,9 @@ class DTCountDownView: UIView {
     private let backgroundShapeLayer = CAShapeLayer()
     private let timeShapeLayer = CAShapeLayer()
     private let timeLabel = UILabel()
-    private let time = BehaviorRelay<Int>(value: 0)
+    private let time = BehaviorRelay<Int?>(value: nil)
     private let inAnimation = BehaviorRelay<Bool>(value: false)
     private let disposeBag = DisposeBag()
-}
-
-extension DTCountDownView: CAAnimationDelegate {
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        inAnimation.accept(false)
-    }
 }
 
 // MARK: - Setup UI
@@ -87,17 +81,19 @@ private extension DTCountDownView {
         rx
             .observe(\.isHidden)
             .filter { $0 }
-            .map { _ in 0 }
-            .bind(to: time)
+            .map { _ in false }
+            .bind(to: inAnimation)
             .disposed(by: disposeBag)
         
         time
+            .compactMap { $0 }
             .map { String(format: "%d", $0) }
-            .asDriver(onErrorJustReturn: "0")
+            .asDriver(onErrorJustReturn: "")
             .drive(timeLabel.rx.text)
             .disposed(by: disposeBag)
         
         time
+            .compactMap { $0 }
             .withUnretained(self)
             .map { owner, time -> UIColor in
                 0...5 ~= time ? .red : .white
@@ -107,6 +103,7 @@ private extension DTCountDownView {
             .disposed(by: disposeBag)
         
         time
+            .compactMap { $0 }
             .filter { 0...5 ~= $0 }
             .withUnretained(timeLabel)
             .subscribe(onNext: { timeLabel, _ in
@@ -121,10 +118,15 @@ private extension DTCountDownView {
             .disposed(by: disposeBag)
         
         time
-            .filter { $0 > 0 }
+            .compactMap { $0 }
+            .filter { $0 >= 0 }
             .withUnretained(self)
             .map { owner, time -> UIColor in
-                1...5 ~= time ? .red : .systemGreen
+                if time == 0 {
+                    return .clear
+                } else {
+                    return 1...5 ~= time ? .red : .systemGreen
+                }
             }
             .map { $0.cgColor }
             .asDriver(onErrorJustReturn: UIColor.clear.cgColor)
@@ -132,23 +134,16 @@ private extension DTCountDownView {
             .disposed(by: disposeBag)
         
         time
+            .compactMap { $0 }
             .subscribe(onNext: { [weak self] time in
                 guard let self = self else { return }
                 let animation = CABasicAnimation(keyPath: "strokeEnd")
                 animation.fromValue = Float(time) / 10.0
                 animation.toValue = 0
                 animation.duration = CFTimeInterval(time)
-                animation.delegate = self
 
                 self.timeShapeLayer.add(animation, forKey: animation.keyPath)
             })
-            .disposed(by: disposeBag)
-        
-        inAnimation
-            .filter { !$0 }
-            .map { _ in UIColor.clear.cgColor }
-            .asDriver(onErrorJustReturn: UIColor.clear.cgColor)
-            .drive(timeShapeLayer.rx.strokeColor)
             .disposed(by: disposeBag)
     }
 }
