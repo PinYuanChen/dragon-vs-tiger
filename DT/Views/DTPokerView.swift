@@ -10,6 +10,10 @@ class DTPokerView: UIView {
         set { _suit.accept(newValue) }
         get { _suit.value }
     }
+    
+    let foldCard = PublishRelay<Void>()
+    let flipCard = PublishRelay<Void>()
+    let finishFlipCard = PublishRelay<Void>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -85,6 +89,31 @@ private extension DTPokerView {
                 
                 owner.suitLabel.text = suit.suit.title
                 owner.numLabel.text = "\(suit.number)"
+            })
+            .disposed(by: disposeBag)
+        
+        foldCard
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.cardBackImageView.isHidden = false
+                owner.suitLabel.isHidden = true
+                owner.numLabel.isHidden = true
+            })
+            .disposed(by: disposeBag)
+        
+        flipCard
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                UIView.transition(with: self,
+                                  duration: 0.5,
+                                  options: .transitionFlipFromLeft,
+                                  animations: {
+                    owner.cardBackImageView.isHidden = true
+                    owner.suitLabel.isHidden = false
+                    owner.numLabel.isHidden = false
+                }, completion: { _ in
+                    owner.finishFlipCard.accept(())
+                })
             })
             .disposed(by: disposeBag)
     }

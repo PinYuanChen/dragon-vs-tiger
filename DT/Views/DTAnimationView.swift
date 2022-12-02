@@ -8,6 +8,8 @@ class DTAnimationView: UIView {
     
     let showResultWithoutAnimation = PublishRelay<GameResultModel>()
     let showResultWithAnimation = PublishRelay<GameResultModel>()
+    let beginAnimation = PublishRelay<Void>()
+    let finishAnimation = PublishRelay<Void>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -75,5 +77,23 @@ private extension DTAnimationView {
         showResultWithoutAnimation
             .bind(to: pokerResultView.showResultWithoutAnimation)
             .disposed(by: disposeBag)
+        
+        beginAnimation
+            .bind(to: pokerResultView.beginAnimation)
+            .disposed(by: disposeBag)
+        
+        showResultWithAnimation
+            .bind(to: pokerResultView.showResultWithAnimation)
+            .disposed(by: disposeBag)
+        
+        pokerResultView
+            .finishAnimation
+            .bind(to: finishAnimation)
+            .disposed(by: disposeBag)
     }
+}
+
+// MARK: - Private functions
+private extension DTAnimationView {
+    
 }

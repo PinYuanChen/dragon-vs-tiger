@@ -23,7 +23,7 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.input.getLastGameResult()
+        viewModel.input.getCurrentTime()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -109,7 +109,13 @@ private extension ViewController {
 // MARK: - Bind
 private extension ViewController {
     func bind() {
-        
+        animationView
+            .finishAnimation
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.viewModel.input.getCurrentTime()
+            })
+            .disposed(by: disposeBag)
     }
     
     func bind(viewModel: DTViewModelPrototype) {
@@ -123,8 +129,14 @@ private extension ViewController {
         viewModel
             .output
             .gameResult
+            .bind(to: animationView.showResultWithAnimation)
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
+            .showCurrentTime
             .withUnretained(self)
-            .subscribe(onNext: { owner, result in
+            .subscribe(onNext: { owner, _ in
                 if owner.timer == nil {
                     owner.countDownNum = 0
                     owner.timer = Timer.scheduledTimer(
@@ -150,6 +162,7 @@ private extension ViewController {
             countDownNum += 1
         } else {
             invalidate()
+            animationView.beginAnimation.accept(())
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.viewModel.input.getGameResult()
             }

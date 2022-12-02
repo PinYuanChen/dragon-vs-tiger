@@ -11,11 +11,13 @@ protocol DTViewModelPrototype {
 protocol DTViewModelOutput {
     var lastGameResult: Observable<GameResultModel> { get }
     var gameResult: Observable<GameResultModel> { get }
+    var showCurrentTime: Observable<Void> { get }
 }
 
 protocol DTViewModelInput {
     func getLastGameResult()
     func getGameResult()
+    func getCurrentTime()
 }
 
 class DTViewModel: DTViewModelPrototype {
@@ -25,16 +27,22 @@ class DTViewModel: DTViewModelPrototype {
 
     private let _lastGameResult = PublishRelay<GameResultModel>()
     private let _gameResult = BehaviorRelay<GameResultModel?>(value: nil)
+    private let _showCurrentTime = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
 extension DTViewModel: DTViewModelOutput {
+    
     var lastGameResult: RxSwift.Observable<GameResultModel> {
         _lastGameResult.asObservable()
     }
     
     var gameResult: RxSwift.Observable<GameResultModel> {
         _gameResult.compactMap { $0 }.asObservable()
+    }
+    
+    var showCurrentTime: RxSwift.Observable<Void> {
+        _showCurrentTime.asObservable()
     }
 }
 
@@ -52,6 +60,10 @@ extension DTViewModel: DTViewModelInput {
         let tiger = getSuitResult()
         _gameResult.accept(.init(dragon: dragon,
                                  tiger: tiger))
+    }
+    
+    func getCurrentTime() {
+        _showCurrentTime.accept(())
     }
 }
 
