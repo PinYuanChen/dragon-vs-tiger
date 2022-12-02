@@ -5,6 +5,8 @@ import RxSwift
 import RxCocoa
 
 class DTPlayView: UIView {
+    
+    let showWinPlay = PublishRelay<String>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)

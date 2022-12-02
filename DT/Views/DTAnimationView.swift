@@ -9,6 +9,8 @@ class DTAnimationView: UIView {
     let showResultWithoutAnimation = PublishRelay<GameResultModel>()
     let showResultWithAnimation = PublishRelay<GameResultModel>()
     let beginAnimation = PublishRelay<Void>()
+    let finishFlipCard = PublishRelay<Void>()
+    let showWinner = PublishRelay<String>()
     let finishAnimation = PublishRelay<Void>()
 
     override init(frame: CGRect) {
@@ -87,8 +89,44 @@ private extension DTAnimationView {
             .disposed(by: disposeBag)
         
         pokerResultView
-            .finishAnimation
-            .bind(to: finishAnimation)
+            .finishFlipCard
+            .bind(to: finishFlipCard)
+            .disposed(by: disposeBag)
+        
+        showWinner
+            .withUnretained(self)
+            .subscribe(onNext: { owner, winner in
+                let imageView = UIImageView()
+                if winner == "dragon" {
+                    imageView.image = .init(named: "dragon")
+                    owner.dragonImageView.addSubview(imageView)
+                } else if winner == "tiger" {
+                    imageView.image = .init(named: "tiger")
+                    owner.tigerImageView.addSubview(imageView)
+                } else {
+                    return
+                }
+                
+                imageView.snp.makeConstraints {
+                    $0.edges.equalToSuperview()
+                }
+                
+                imageView.transform = .identity
+                
+                UIView
+                    .animate(
+                        withDuration: 1,
+                        delay: 0,
+                        options: [.curveEaseInOut, .repeat]) {
+                            imageView.transform = CGAffineTransform(scaleX: 2, y: 2)
+                            imageView.alpha = 0
+                        }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.8) {
+                    imageView.removeFromSuperview()
+                    owner.finishAnimation.accept(())
+                }
+            })
             .disposed(by: disposeBag)
     }
 }

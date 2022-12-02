@@ -110,6 +110,14 @@ private extension ViewController {
 private extension ViewController {
     func bind() {
         animationView
+            .finishFlipCard
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.viewModel.input.getWinPlay()
+            })
+            .disposed(by: disposeBag)
+        
+        animationView
             .finishAnimation
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
@@ -130,6 +138,12 @@ private extension ViewController {
             .output
             .gameResult
             .bind(to: animationView.showResultWithAnimation)
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
+            .showWinPlay
+            .bind(to: animationView.showWinner)
             .disposed(by: disposeBag)
         
         viewModel

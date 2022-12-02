@@ -7,6 +7,7 @@ import RxCocoa
 
 class DTPlayCollectionViewCell: UICollectionViewCell {
     
+    let showWinPlay = PublishRelay<String>()
     var reuseDisposeBag = DisposeBag()
     
     override init(frame: CGRect) {

@@ -9,7 +9,7 @@ class DTPokerResultView: UIView {
     let showResultWithoutAnimation = PublishRelay<GameResultModel>()
     let showResultWithAnimation = PublishRelay<GameResultModel>()
     let beginAnimation = PublishRelay<Void>()
-    let finishAnimation = PublishRelay<Void>()
+    let finishFlipCard = PublishRelay<Void>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -84,7 +84,7 @@ private extension DTPokerResultView {
         
         tigerPoker
             .finishFlipCard
-            .bind(to: finishAnimation)
+            .bind(to: finishFlipCard)
             .disposed(by: disposeBag)
     }
 }
