@@ -90,16 +90,14 @@ private extension ViewController {
         playView.snp.makeConstraints {
             $0.width.centerX.equalToSuperview()
             $0.height.equalTo(150.auto())
-            $0.top.equalTo(animationView.snp.bottom)
+            $0.top.equalTo(animationView.snp.bottom).offset(20.auto())
         }
     }
     
     func setupBottomView() {
-        bottomView.backgroundColor = .orange
-        
         view.addSubview(bottomView)
         bottomView.snp.makeConstraints {
-            $0.width.centerX.equalToSuperview()
+            $0.leading.centerX.equalToSuperview()
             $0.height.equalTo(150.auto())
             $0.bottom.equalToSuperview()
         }

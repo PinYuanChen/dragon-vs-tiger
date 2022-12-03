@@ -25,7 +25,6 @@ class DTCountDownView: UIView {
     private let timeShapeLayer = CAShapeLayer()
     private let timeLabel = UILabel()
     private let time = BehaviorRelay<Int?>(value: nil)
-    private let inAnimation = BehaviorRelay<Bool>(value: false)
     private let disposeBag = DisposeBag()
 }
 
@@ -78,12 +77,6 @@ private extension DTCountDownView {
 // MARK: - Bind
 private extension DTCountDownView {
     func bind() {
-        rx
-            .observe(\.isHidden)
-            .filter { $0 }
-            .map { _ in false }
-            .bind(to: inAnimation)
-            .disposed(by: disposeBag)
         
         time
             .compactMap { $0 }
@@ -125,7 +118,7 @@ private extension DTCountDownView {
                 if time == 0 {
                     return .clear
                 } else {
-                    return 1...5 ~= time ? .red : .systemGreen
+                    return 0...5 ~= time ? .red : .systemGreen
                 }
             }
             .map { $0.cgColor }

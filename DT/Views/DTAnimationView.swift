@@ -122,7 +122,7 @@ private extension DTAnimationView {
                             imageView.alpha = 0
                         }
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.8) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                     imageView.removeFromSuperview()
                     owner.finishAnimation.accept(())
                 }
