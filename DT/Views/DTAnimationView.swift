@@ -104,6 +104,7 @@ private extension DTAnimationView {
                     imageView.image = .init(named: "tiger")
                     owner.tigerImageView.addSubview(imageView)
                 } else {
+                    owner.finishAnimation.accept(())
                     return
                 }
                 

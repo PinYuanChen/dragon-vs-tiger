@@ -140,7 +140,6 @@ extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChipCell", for: indexPath) as? ChipCollectionViewCell else {
             return .init()
         }
-        cell.backgroundColor = .blue
         return cell
     }
 }
