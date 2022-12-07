@@ -50,8 +50,7 @@ private extension DTBottomView {
         let flowLayout: UICollectionViewFlowLayout = .init()
         flowLayout.scrollDirection = .horizontal
         flowLayout.sectionInset = .zero
-//        flowLayout.minimumLineSpacing = 5
-        flowLayout.minimumInteritemSpacing = 5
+        flowLayout.minimumInteritemSpacing = .zero
         
         collectionView.delegate = self
         collectionView.dataSource = self

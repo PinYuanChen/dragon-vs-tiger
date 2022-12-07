@@ -1,0 +1,18 @@
+{
+    "cateCode": "DT",
+    "playType": [
+        {
+            "playCode": "dragon",
+            "odds": "1.76"
+        },
+        {
+            "playCode": "tiger",
+            "odds": "1.76"
+        },
+        {
+            "playCode": "tie",
+            "odds": "7.6"
+        }
+    ]
+}
+

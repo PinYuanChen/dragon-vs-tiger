@@ -38,7 +38,10 @@ private extension ChipCollectionViewCell {
     }
     
     func setupChipLabel() {
-        chipLabel.text = "5K"
+        chipLabel.text = "100K"
+        chipLabel.font = .systemFont(ofSize: 8)
+        chipLabel.textColor = .systemRed
+        
         chipImageView.addSubview(chipLabel)
         chipLabel.snp.makeConstraints {
             $0.height.equalTo(20.auto())
