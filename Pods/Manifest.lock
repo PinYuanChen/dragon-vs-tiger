@@ -1,5 +1,4 @@
 PODS:
-  - AutoInch (2.4.1)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
@@ -7,28 +6,29 @@ PODS:
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
   - SnapKit (4.2.0)
+  - UIAdapter (1.2.0)
 
 DEPENDENCIES:
-  - AutoInch (= 2.4.1)
   - RxCocoa (= 6.5.0)
   - RxSwift (= 6.5.0)
   - SnapKit (= 4.2.0)
+  - UIAdapter
 
 SPEC REPOS:
   trunk:
-    - AutoInch
     - RxCocoa
     - RxRelay
     - RxSwift
     - SnapKit
+    - UIAdapter
 
 SPEC CHECKSUMS:
-  AutoInch: 4d69de92c4c54b71352d67d07dcb6d9e5d1e546a
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  UIAdapter: e11dd63448d651786227fd197965dc738743a83b
 
-PODFILE CHECKSUM: d2675de43277289a95cc4af981501a5ba6aa8856
+PODFILE CHECKSUM: f4d5f7475c05fcfca1df1812e245771372bf1c0c
 
 COCOAPODS: 1.11.3

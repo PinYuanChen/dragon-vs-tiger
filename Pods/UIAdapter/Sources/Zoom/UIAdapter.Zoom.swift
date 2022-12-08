@@ -1,5 +1,5 @@
 //
-//  Auto.swift
+//  UIAdapter.Zoom.swift
 //  ┌─┐      ┌───────┐ ┌───────┐
 //  │ │      │ ┌─────┘ │ ┌─────┘
 //  │ │      │ └─────┐ │ └─────┐
@@ -19,128 +19,131 @@ import Foundation
 
 import UIKit
 
-public enum Auto {
+public enum UIAdapter {
     
-    /// 设置转换闭包
-    ///
-    /// - Parameter conversion: 转换闭包
-    public static func set(conversion: @escaping ((Double) -> Double)) {
-        conversionClosure = conversion
-    }
-    
-    /// 转换 用于数值的等比例计算 如需自定义可重新设置
-    static var conversionClosure: ((Double) -> Double) = { (origin) in
-        guard UIDevice.current.userInterfaceIdiom == .phone else {
-            return origin
+    public enum Zoom {
+        
+        /// 设置转换闭包
+        ///
+        /// - Parameter conversion: 转换闭包
+        public static func set(conversion: @escaping ((Double) -> Double)) {
+            conversionClosure = conversion
         }
         
-        let base = 375.0
-        let screenWidth = Double(UIScreen.main.bounds.width)
-        let screenHeight = Double(UIScreen.main.bounds.height)
-        let width = min(screenWidth, screenHeight)
-        let result = origin * (width / base)
-        let scale = Double(UIScreen.main.scale)
-        return (result * scale).rounded(.up) / scale
+        /// 转换 用于数值的等比例计算 如需自定义可重新设置
+        static var conversionClosure: ((Double) -> Double) = { (origin) in
+            guard UIDevice.current.userInterfaceIdiom == .phone else {
+                return origin
+            }
+            
+            let base = 375.0
+            let screenWidth = Double(UIScreen.main.bounds.width)
+            let screenHeight = Double(UIScreen.main.bounds.height)
+            let width = min(screenWidth, screenHeight)
+            let result = origin * (width / base)
+            let scale = Double(UIScreen.main.scale)
+            return (result * scale).rounded(.up) / scale
+        }
     }
 }
 
-extension Auto {
+extension UIAdapter.Zoom {
     
     static func conversion(_ value: Double) -> Double {
         return conversionClosure(value)
     }
 }
 
-protocol AutoCalculationable {
+protocol UIAdapterZoomCalculationable {
     
-    /// 自动计算
+    /// 缩放计算
     ///
     /// - Returns: 结果
-    func auto() -> Self
+    func zoom() -> Self
 }
 
-extension Double: AutoCalculationable {
+extension Double: UIAdapterZoomCalculationable {
     
-    func auto() -> Double {
-        return Auto.conversion(self)
+    func zoom() -> Double {
+        return UIAdapter.Zoom.conversion(self)
     }
 }
 
 extension BinaryInteger {
     
-    public func auto() -> Double {
+    public func zoom() -> Double {
         let temp = Double("\(self)") ?? 0
-        return temp.auto()
+        return temp.zoom()
     }
-    public func auto<T>() -> T where T : BinaryInteger {
+    public func zoom<T>() -> T where T : BinaryInteger {
         let temp = Double("\(self)") ?? 0
-        return temp.auto()
+        return temp.zoom()
     }
-    public func auto<T>() -> T where T : BinaryFloatingPoint {
+    public func zoom<T>() -> T where T : BinaryFloatingPoint {
         let temp = Double("\(self)") ?? 0
-        return temp.auto()
+        return temp.zoom()
     }
 }
 
 extension BinaryFloatingPoint {
     
-    public func auto() -> Double {
+    public func zoom() -> Double {
         let temp = Double("\(self)") ?? 0
-        return temp.auto()
+        return temp.zoom()
     }
-    public func auto<T>() -> T where T : BinaryInteger {
+    public func zoom<T>() -> T where T : BinaryInteger {
         let temp = Double("\(self)") ?? 0
-        return T(temp.auto())
+        return T(temp.zoom())
     }
-    public func auto<T>() -> T where T : BinaryFloatingPoint {
+    public func zoom<T>() -> T where T : BinaryFloatingPoint {
         let temp = Double("\(self)") ?? 0
-        return T(temp.auto())
+        return T(temp.zoom())
     }
 }
 
-extension CGPoint: AutoCalculationable {
+extension CGPoint: UIAdapterZoomCalculationable {
     
-    public func auto() -> CGPoint {
-        return CGPoint(x: x.auto(), y: y.auto())
+    public func zoom() -> CGPoint {
+        return CGPoint(x: x.zoom(), y: y.zoom())
     }
 }
 
-extension CGSize: AutoCalculationable {
+extension CGSize: UIAdapterZoomCalculationable {
     
-    public func auto() -> CGSize {
-        return CGSize(width: width.auto(), height: height.auto())
+    public func zoom() -> CGSize {
+        return CGSize(width: width.zoom(), height: height.zoom())
     }
 }
 
-extension CGRect: AutoCalculationable {
+extension CGRect: UIAdapterZoomCalculationable {
     
-    public func auto() -> CGRect {
-        return CGRect(origin: origin.auto(), size: size.auto())
+    public func zoom() -> CGRect {
+        return CGRect(origin: origin.zoom(), size: size.zoom())
     }
 }
 
-extension CGVector: AutoCalculationable {
+extension CGVector: UIAdapterZoomCalculationable {
     
-    public func auto() -> CGVector {
-        return CGVector(dx: dx.auto(), dy: dy.auto())
+    public func zoom() -> CGVector {
+        return CGVector(dx: dx.zoom(), dy: dy.zoom())
     }
 }
 
-extension UIOffset: AutoCalculationable {
+extension UIOffset: UIAdapterZoomCalculationable {
     
-    public func auto() -> UIOffset {
-        return UIOffset(horizontal: horizontal.auto(), vertical: vertical.auto())
+    public func zoom() -> UIOffset {
+        return UIOffset(horizontal: horizontal.zoom(), vertical: vertical.zoom())
     }
 }
 
-extension UIEdgeInsets: AutoCalculationable {
+extension UIEdgeInsets: UIAdapterZoomCalculationable {
     
-    public func auto() -> UIEdgeInsets {
+    public func zoom() -> UIEdgeInsets {
         return UIEdgeInsets(
-            top: top.auto(),
-            left: left.auto(),
-            bottom: bottom.auto(),
-            right: right.auto()
+            top: top.zoom(),
+            left: left.zoom(),
+            bottom: bottom.zoom(),
+            right: right.zoom()
         )
     }
 }
@@ -148,22 +151,22 @@ extension UIEdgeInsets: AutoCalculationable {
 
 extension NSLayoutConstraint {
     
-    @IBInspectable private var autoConstant: Bool {
+    @IBInspectable private var zoomConstant: Bool {
         get { return false }
         set {
             guard newValue else { return }
             
-            constant = constant.auto()
+            constant = constant.zoom()
         }
     }
 }
 
 extension UIView {
     
-    @IBInspectable private var autoCornerRadius: CGFloat {
+    @IBInspectable private var zoomCornerRadius: CGFloat {
         get { return layer.cornerRadius }
         set {
-            let value: CGFloat = newValue.auto()
+            let value: CGFloat = newValue.zoom()
             layer.masksToBounds = true
             layer.cornerRadius = abs(CGFloat(Int(value * 100)) / 100)
         }
@@ -172,7 +175,7 @@ extension UIView {
 
 extension UILabel {
     
-    @IBInspectable private var autoFont: Bool {
+    @IBInspectable private var zoomFont: Bool {
         get { return false }
         set {
             guard newValue else { return }
@@ -180,69 +183,69 @@ extension UILabel {
                 return
             }
             
-            font = font.withSize(font.pointSize.auto())
-            attributedText = text.reset(font: { $0.auto() })
+            font = font.withSize(font.pointSize.zoom())
+            attributedText = text.reset(font: { $0.zoom() })
         }
     }
     
-    @IBInspectable private var autoLine: Bool {
+    @IBInspectable private var zoomLine: Bool {
         get { return false }
         set {
             guard newValue else { return }
             guard let text = attributedText else { return }
             
-            attributedText = text.reset(line: { $0.auto() })
+            attributedText = text.reset(line: { $0.zoom() })
         }
     }
     
-    @IBInspectable private var autoShadowOffset: Bool {
+    @IBInspectable private var zoomShadowOffset: Bool {
         get { return false }
         set {
             guard newValue else { return }
             
-            shadowOffset = shadowOffset.auto()
+            shadowOffset = shadowOffset.zoom()
         }
     }
 }
 
 extension UITextView {
     
-    @IBInspectable private var autoFont: Bool {
+    @IBInspectable private var zoomFont: Bool {
         get { return false }
         set {
             guard newValue else { return }
             guard let font = font else { return }
             
-            self.font = font.withSize(font.pointSize.auto())
+            self.font = font.withSize(font.pointSize.zoom())
         }
     }
 }
 
 extension UITextField {
     
-    @IBInspectable private var autoFont: Bool {
+    @IBInspectable private var zoomFont: Bool {
         get { return false }
         set {
             guard newValue else { return }
             guard let font = font else { return }
             
-            self.font = font.withSize(font.pointSize.auto())
+            self.font = font.withSize(font.pointSize.zoom())
         }
     }
 }
 
 extension UIImageView {
     
-    @IBInspectable private var autoImage: Bool {
+    @IBInspectable private var zoomImage: Bool {
         get { return false }
         set {
             guard newValue else { return }
             
             if let width = image?.size.width {
-                image = image?.scaled(to: width.auto())
+                image = image?.scaled(to: width.zoom())
             }
             if let width = highlightedImage?.size.width {
-                highlightedImage = highlightedImage?.scaled(to: width.auto())
+                highlightedImage = highlightedImage?.scaled(to: width.zoom())
             }
         }
     }
@@ -250,7 +253,7 @@ extension UIImageView {
 
 extension UIButton {
     
-    @IBInspectable private var autoTitle: Bool {
+    @IBInspectable private var zoomTitle: Bool {
         get { return false }
         set {
             guard newValue else { return }
@@ -266,7 +269,7 @@ extension UIButton {
                 let _ = title(for: state),
                 let label = titleLabel,
                 let font = label.font {
-                label.font = font.withSize(font.pointSize.auto())
+                label.font = font.withSize(font.pointSize.zoom())
             }
             
             let titles = states.enumerated().compactMap {
@@ -276,14 +279,14 @@ extension UIButton {
             }
             titles.filtered(duplication: { $0.1 }).forEach {
                 setAttributedTitle(
-                    $0.1.reset(font: { $0.auto() }),
+                    $0.1.reset(font: { $0.zoom() }),
                     for: states[$0.0]
                 )
             }
         }
     }
     
-    @IBInspectable private var autoImage: Bool {
+    @IBInspectable private var zoomImage: Bool {
         get { return false }
         set {
             guard newValue else { return }
@@ -302,7 +305,7 @@ extension UIButton {
             }
             images.filtered(duplication: { $0.1 }).forEach {
                 setImage(
-                    $0.1.scaled(to: $0.1.size.width.auto()),
+                    $0.1.scaled(to: $0.1.size.width.zoom()),
                     for: states[$0.0]
                 )
             }
@@ -314,37 +317,37 @@ extension UIButton {
             }
             backgrounds.filtered(duplication: { $0.1 }).forEach {
                 setBackgroundImage(
-                    $0.1.scaled(to: $0.1.size.width.auto()),
+                    $0.1.scaled(to: $0.1.size.width.zoom()),
                     for: states[$0.0]
                 )
             }
         }
     }
     
-    @IBInspectable private var autoTitleInsets: Bool {
+    @IBInspectable private var zoomTitleInsets: Bool {
         get { return false }
         set {
             guard newValue else { return }
             
-            titleEdgeInsets = titleEdgeInsets.auto()
+            titleEdgeInsets = titleEdgeInsets.zoom()
         }
     }
     
-    @IBInspectable private var autoImageInsets: Bool {
+    @IBInspectable private var zoomImageInsets: Bool {
         get { return false }
         set {
             guard newValue else { return }
             
-            imageEdgeInsets = imageEdgeInsets.auto()
+            imageEdgeInsets = imageEdgeInsets.zoom()
         }
     }
     
-    @IBInspectable private var autoContentInsets: Bool {
+    @IBInspectable private var zoomContentInsets: Bool {
         get { return false }
         set {
             guard newValue else { return }
             
-            contentEdgeInsets = contentEdgeInsets.auto()
+            contentEdgeInsets = contentEdgeInsets.zoom()
         }
     }
 }
@@ -352,12 +355,12 @@ extension UIButton {
 @available(iOS 9.0, *)
 extension UIStackView {
     
-    @IBInspectable private var autoSpacing: Bool {
+    @IBInspectable private var zoomSpacing: Bool {
         get { return false }
         set {
             guard newValue else { return }
             
-            spacing = spacing.auto()
+            spacing = spacing.zoom()
         }
     }
 }
@@ -480,3 +483,4 @@ public extension UIEdgeInsets {
 #endif
 
 #endif
+

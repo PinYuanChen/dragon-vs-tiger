@@ -44,8 +44,8 @@ private extension DTAnimationView {
         addSubview(dragonImageView)
         
         dragonImageView.snp.makeConstraints {
-            $0.width.equalTo(150.auto())
-            $0.height.equalTo(160.auto())
+            $0.width.equalTo(150.zoom())
+            $0.height.equalTo(160.zoom())
             $0.leading.centerY.equalToSuperview()
         }
     }
@@ -56,19 +56,19 @@ private extension DTAnimationView {
         addSubview(tigerImageView)
         
         tigerImageView.snp.makeConstraints {
-            $0.width.equalTo(120.auto())
-            $0.height.equalTo(180.auto())
-            $0.trailing.centerY.equalToSuperview().inset(20.auto())
+            $0.width.equalTo(120.zoom())
+            $0.height.equalTo(180.zoom())
+            $0.trailing.centerY.equalToSuperview().inset(20.zoom())
         }
     }
     
     func setupPokerResultView() {
         addSubview(pokerResultView)
         pokerResultView.snp.makeConstraints {
-            $0.width.equalTo(200.auto())
-            $0.height.equalTo(100.auto())
+            $0.width.equalTo(200.zoom())
+            $0.height.equalTo(100.zoom())
             $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview().offset(50.auto())
+            $0.centerY.equalToSuperview().offset(50.zoom())
         }
     }
 }

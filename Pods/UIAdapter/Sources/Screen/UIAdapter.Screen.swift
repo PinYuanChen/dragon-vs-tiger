@@ -1,5 +1,5 @@
 //
-//  Screen.swift
+//  UIAdapter.Screen.swift
 //  ┌─┐      ┌───────┐ ┌───────┐
 //  │ │      │ ┌─────┘ │ ┌─────┘
 //  │ │      │ └─────┐ │ └─────┐
@@ -11,13 +11,16 @@
 //  Copyright © 2018年 lee. All rights reserved.
 //
 
+// https://www.screensizes.app
+// https://useyourloaf.com/blog/iphone-14-screen-sizes/?continueFlag=d151fc49ec5161587c30f15faea0bee9
+
 import Foundation
 
 #if os(iOS)
 
 import UIKit
 
-public class ScreenWrapper<Base> {
+public class UIAdapterScreenWrapper<Base> {
     let base: Base
     
     public private(set) var value: Base
@@ -28,19 +31,21 @@ public class ScreenWrapper<Base> {
     }
 }
 
-public protocol ScreenCompatible {
+public protocol UIAdapterScreenCompatible {
     associatedtype ScreenCompatibleType
     var screen: ScreenCompatibleType { get }
 }
 
-extension ScreenCompatible {
+extension UIAdapterScreenCompatible {
     
-    public var screen: ScreenWrapper<Self> {
-        get { return ScreenWrapper(self) }
+    public var screen: UIAdapterScreenWrapper<Self> {
+        get { return UIAdapterScreenWrapper(self) }
     }
 }
 
-extension ScreenWrapper {
+extension UIAdapterScreenWrapper {
+    
+    public typealias Screen = UIAdapter.Screen
     
     public func width(_ types: Screen.Width..., is value: Base) -> Self {
         return width(types, is: value, zoomed: value)
@@ -95,24 +100,30 @@ extension ScreenWrapper {
     }
 }
 
-public enum Screen {
+extension UIAdapter {
+    
+    public enum Screen {
+        
+        static var size: CGSize {
+            UIScreen.main.bounds.size
+        }
+        static var nativeSize: CGSize {
+            UIScreen.main.nativeBounds.size
+        }
+        static var scale: CGFloat {
+            UIScreen.main.scale
+        }
+        static var nativeScale: CGFloat {
+            UIScreen.main.nativeScale
+        }
+    }
+}
+
+extension UIAdapter.Screen {
     
     public static var isZoomedMode: Bool {
         guard !isPlus else { return UIScreen.main.bounds.width == 375 }
         return UIScreen.main.scale != UIScreen.main.nativeScale
-    }
-    
-    static var size: CGSize {
-        UIScreen.main.bounds.size
-    }
-    static var nativeSize: CGSize {
-        UIScreen.main.nativeBounds.size
-    }
-    static var scale: CGFloat {
-        UIScreen.main.scale
-    }
-    static var nativeScale: CGFloat {
-        UIScreen.main.nativeScale
     }
     
     public enum Width: CGFloat {
@@ -120,8 +131,10 @@ public enum Screen {
         case _320 = 320
         case _375 = 375
         case _390 = 390
+        case _393 = 393
         case _414 = 414
         case _428 = 428
+        case _430 = 430
         
         public static var current: Width {
             guard !isPlus else { return ._414 }
@@ -137,8 +150,10 @@ public enum Screen {
         case _736 = 736
         case _812 = 812
         case _844 = 844
+        case _852 = 852
         case _896 = 896
         case _926 = 926
+        case _932 = 932
         
         public static var current: Height {
             guard !isPlus else { return ._736 }
@@ -183,13 +198,13 @@ public enum Screen {
             case (375, 812, 3):
                 return ._5_8
                 
-            case (414, 896, 2), (390, 844, 3):
+            case (414, 896, 2), (390, 844, 3), (393, 852, 3):
                 return ._6_1
 
             case (414, 896, 3):
                 return ._6_5
                 
-            case (428, 926, 3):
+            case (428, 926, 3), (430, 932, 3):
                 return ._6_7
                 
             default:
@@ -220,7 +235,7 @@ public enum Screen {
             case (320, 568), (375, 667), (414, 736):
                 return .regular
             
-            case (375, 812), (414, 896), (390, 844), (428, 926):
+            case (375, 812), (414, 896), (390, 844), (393, 852), (428, 926), (430, 932):
                 return .full
                 
             default:
@@ -234,7 +249,7 @@ public enum Screen {
     }
 }
 
-extension Screen {
+extension UIAdapter.Screen {
     
     public static var isCompact: Bool {
         return Level.current == .compact
@@ -249,32 +264,32 @@ extension Screen {
     }
 }
 
-extension Int: ScreenCompatible {}
-extension Bool: ScreenCompatible {}
-extension Float: ScreenCompatible {}
-extension Double: ScreenCompatible {}
-extension String: ScreenCompatible {}
-extension CGRect: ScreenCompatible {}
-extension CGSize: ScreenCompatible {}
-extension CGFloat: ScreenCompatible {}
-extension CGPoint: ScreenCompatible {}
-extension UIImage: ScreenCompatible {}
-extension UIColor: ScreenCompatible {}
-extension UIFont: ScreenCompatible {}
-extension UIEdgeInsets: ScreenCompatible {}
+extension Int: UIAdapterScreenCompatible {}
+extension Bool: UIAdapterScreenCompatible {}
+extension Float: UIAdapterScreenCompatible {}
+extension Double: UIAdapterScreenCompatible {}
+extension String: UIAdapterScreenCompatible {}
+extension CGRect: UIAdapterScreenCompatible {}
+extension CGSize: UIAdapterScreenCompatible {}
+extension CGFloat: UIAdapterScreenCompatible {}
+extension CGPoint: UIAdapterScreenCompatible {}
+extension UIImage: UIAdapterScreenCompatible {}
+extension UIColor: UIAdapterScreenCompatible {}
+extension UIFont: UIAdapterScreenCompatible {}
+extension UIEdgeInsets: UIAdapterScreenCompatible {}
 
 
 fileprivate extension UIDevice {
     
     static var iPhoneMini: Bool {
-        let temp = ["iPhone13,1", "iPhone14,4"]
-        
         switch identifier {
         case "iPhone13,1", "iPhone14,4":
             return true
             
         case "i386", "x86_64", "arm64":
-            return temp.contains(ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] ?? "")
+            return ["iPhone13,1", "iPhone14,4"].contains(
+                ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] ?? ""
+            )
             
         default:
             return false
@@ -293,6 +308,5 @@ fileprivate extension UIDevice {
         return identifier
     } ()
 }
-
 
 #endif

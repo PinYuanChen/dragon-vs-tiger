@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double AutoInchVersionNumber;
-FOUNDATION_EXPORT const unsigned char AutoInchVersionString[];
+FOUNDATION_EXPORT double UIAdapterVersionNumber;
+FOUNDATION_EXPORT const unsigned char UIAdapterVersionString[];
 

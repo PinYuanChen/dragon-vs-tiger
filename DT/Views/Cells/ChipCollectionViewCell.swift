@@ -32,7 +32,7 @@ private extension ChipCollectionViewCell {
         chipImageView.image = .init(named: "chip")
         addSubview(chipImageView)
         chipImageView.snp.makeConstraints {
-            $0.size.equalTo(60.auto())
+            $0.size.equalTo(60.zoom())
             $0.center.equalToSuperview()
         }
     }
@@ -44,7 +44,7 @@ private extension ChipCollectionViewCell {
         
         chipImageView.addSubview(chipLabel)
         chipLabel.snp.makeConstraints {
-            $0.height.equalTo(20.auto())
+            $0.height.equalTo(20.zoom())
             $0.center.equalToSuperview()
         }
     }

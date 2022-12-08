@@ -60,12 +60,12 @@ private extension DTPlayCollectionViewCell {
     func setupTitleLabel() {
         titleLabel.text = "龍"
         titleLabel.textColor = .white
-        titleLabel.font = .boldSystemFont(ofSize: 24.auto())
+        titleLabel.font = .boldSystemFont(ofSize: 24.zoom())
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20.auto())
+            $0.top.equalToSuperview().inset(20.zoom())
             $0.centerX.equalToSuperview()
-            $0.height.equalTo(30.auto())
+            $0.height.equalTo(30.zoom())
         }
     }
     
@@ -75,17 +75,17 @@ private extension DTPlayCollectionViewCell {
         contentView.addSubview(oddsLabel)
         oddsLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(titleLabel.snp.bottom).offset(10.auto())
-            $0.height.equalTo(20.auto())
+            $0.top.equalTo(titleLabel.snp.bottom).offset(10.zoom())
+            $0.height.equalTo(20.zoom())
         }
     }
     
     func setupChipInfoView() {
         contentView.addSubview(chipInfoView)
         chipInfoView.snp.makeConstraints {
-            $0.width.equalTo(46.auto())
+            $0.width.equalTo(46.zoom())
             $0.bottom.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(4.auto())
+            $0.trailing.equalToSuperview().inset(4.zoom())
         }
     }
     
@@ -94,17 +94,17 @@ private extension DTPlayCollectionViewCell {
         betMoneyLabel.layer.borderWidth = 1
         betMoneyLabel.backgroundColor = .systemGreen.withAlphaComponent(0.5)
         betMoneyLabel.textColor = .green
-        betMoneyLabel.layer.cornerRadius = 4.auto()
+        betMoneyLabel.layer.cornerRadius = 4.zoom()
         betMoneyLabel.layer.masksToBounds = true
         betMoneyLabel.textAlignment = .center
-        betMoneyLabel.font = .systemFont(ofSize: 14.auto())
+        betMoneyLabel.font = .systemFont(ofSize: 14.zoom())
         betMoneyLabel.text = "5K"
         
         contentView.addSubview(betMoneyLabel)
         betMoneyLabel.snp.makeConstraints {
-            $0.leading.top.equalToSuperview().inset(10.auto())
-            $0.height.equalTo(20.auto())
-            $0.width.equalTo(50.auto())
+            $0.leading.top.equalToSuperview().inset(10.zoom())
+            $0.height.equalTo(20.zoom())
+            $0.width.equalTo(50.zoom())
         }
     }
 }

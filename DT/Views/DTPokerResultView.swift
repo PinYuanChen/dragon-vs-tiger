@@ -37,8 +37,8 @@ private extension DTPokerResultView {
     func setupDragonPoker() {
         addSubview(dragonPoker)
         dragonPoker.snp.makeConstraints {
-            $0.width.equalTo(50.auto())
-            $0.height.equalTo(75.auto())
+            $0.width.equalTo(50.zoom())
+            $0.height.equalTo(75.zoom())
             $0.leading.bottom.equalToSuperview()
         }
     }
@@ -93,8 +93,8 @@ private extension DTPokerResultView {
     func resetCardsLayout() {
         dragonPoker.snp.remakeConstraints {
             $0.top.centerX.equalToSuperview()
-            $0.width.equalTo(50.auto())
-            $0.height.equalTo(75.auto())
+            $0.width.equalTo(50.zoom())
+            $0.height.equalTo(75.zoom())
         }
         
         tigerPoker.snp.remakeConstraints {
@@ -122,7 +122,7 @@ private extension DTPokerResultView {
                 delay: 0,
                 options: .curveEaseInOut) { [weak self] in
                     guard let self = self else { return }
-                    self.dragonPoker.transform = .init(translationX: (-75.auto()), y: 25.auto())
+                    self.dragonPoker.transform = .init(translationX: (-75.zoom()), y: 25.zoom())
                 }
         UIView
             .animate(
@@ -130,7 +130,7 @@ private extension DTPokerResultView {
                 delay: 0.08,
                 options: .curveEaseInOut) { [weak self] in
                     guard let self = self else { return }
-                    self.tigerPoker.transform = .init(translationX: 75.auto(), y: CGFloat(25.auto()))
+                    self.tigerPoker.transform = .init(translationX: 75.zoom(), y: CGFloat(25.zoom()))
                 }
     }
 }

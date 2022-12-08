@@ -47,18 +47,18 @@ private extension DTPokerView {
 
     func setupSuitLabel() {
         suitLabel.textAlignment = .center
-        suitLabel.font = .boldSystemFont(ofSize: 20.auto())
+        suitLabel.font = .boldSystemFont(ofSize: 20.zoom())
         
         addSubview(suitLabel)
         suitLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(15.auto())
+            $0.top.equalToSuperview().inset(15.zoom())
             $0.centerX.equalToSuperview()
         }
     }
     
     func setupNumLabel() {
         numLabel.textAlignment = .center
-        numLabel.font = .boldSystemFont(ofSize: 20.auto())
+        numLabel.font = .boldSystemFont(ofSize: 20.zoom())
         
         addSubview(numLabel)
         numLabel.snp.makeConstraints {
