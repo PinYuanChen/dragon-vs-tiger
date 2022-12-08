@@ -5,6 +5,9 @@ import RxSwift
 import RxCocoa
 
 class DTBottomView: UIView {
+    
+    let selectedIndex = BehaviorRelay<Int>(value: 0)
+    let selectedChip = PublishRelay<Void>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -120,7 +123,13 @@ private extension DTBottomView {
 // MARK: - Bind
 private extension DTBottomView {
     func bind() {
-        
+        collectionView
+            .rx
+            .itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                print(indexPath)
+            })
+            .disposed(by: disposeBag)
     }
 }
 

@@ -48,6 +48,7 @@ class ChipCollectionViewCell: UICollectionViewCell {
         get { _type.value }
         set { _type.accept(newValue) }
     }
+    var reuseDisposeBag = DisposeBag()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -58,9 +59,16 @@ class ChipCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        reuseDisposeBag = .init()
+    }
+    
     private let chipImageView = UIImageView()
     private let chipLabel = UILabel()
     private let _type = BehaviorRelay<ChipType>(value: .oneK)
+    private var centerYConstraint: Constraint?
     private let disposeBag = DisposeBag()
 }
 
@@ -77,12 +85,13 @@ private extension ChipCollectionViewCell {
         addSubview(chipImageView)
         chipImageView.snp.makeConstraints {
             $0.size.equalTo(60.zoom())
-            $0.center.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            centerYConstraint = $0.centerY.equalToSuperview().constraint
         }
     }
     
     func setupChipLabel() {
-        chipLabel.font = .systemFont(ofSize: 8)
+        chipLabel.font = .boldSystemFont(ofSize: 10)
         chipLabel.textColor = .systemRed
         
         chipImageView.addSubview(chipLabel)
@@ -100,6 +109,18 @@ private extension ChipCollectionViewCell {
             .map { $0.title }
             .asDriver(onErrorJustReturn: "")
             .drive(chipLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        rx
+            .observe(\.isSelected)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, isSelected in
+                if isSelected {
+                    owner.centerYConstraint?.update(offset: -5.zoom())
+                } else {
+                    owner.centerYConstraint?.update(offset: 0)
+                }
+            })
             .disposed(by: disposeBag)
     }
 }
