@@ -128,7 +128,7 @@ private extension DTBottomView {
 extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        5
+        ChipType.allCases.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -139,6 +139,8 @@ extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChipCell", for: indexPath) as? ChipCollectionViewCell else {
             return .init()
         }
+        let chipType = ChipType.allCases
+        cell.type = chipType[indexPath.item]
         return cell
     }
 }
