@@ -1,5 +1,5 @@
 
-import Foundation
+import UIKit
 
 enum Suit: Int {
     case club

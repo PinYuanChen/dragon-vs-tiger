@@ -35,7 +35,7 @@ private extension ChipInfoView {
         addSubview(chipImageView)
         chipImageView.snp.makeConstraints {
             $0.width.equalToSuperview()
-            $0.height.equalTo(20.auto())
+            $0.height.equalTo(20.zoom())
             $0.bottom.centerX.equalToSuperview()
         }
     }
@@ -45,17 +45,17 @@ private extension ChipInfoView {
         moneyLabel.textAlignment = .center
         moneyLabel.textColor = .white
         moneyLabel.clipsToBounds = true
-        moneyLabel.font = .systemFont(ofSize: 14.auto())
+        moneyLabel.font = .systemFont(ofSize: 14.zoom())
         moneyLabel.layer.borderColor = UIColor.white.cgColor
-        moneyLabel.layer.borderWidth = 1.auto()
-        moneyLabel.layer.cornerRadius = 4.auto()
+        moneyLabel.layer.borderWidth = 1.zoom()
+        moneyLabel.layer.cornerRadius = 4.zoom()
         moneyLabel.layer.masksToBounds = true
         moneyLabel.text = "999K"
         
         addSubview(moneyLabel)
         moneyLabel.snp.makeConstraints {
             $0.leading.centerX.equalToSuperview()
-            $0.height.equalTo(26.auto())
+            $0.height.equalTo(26.zoom())
             $0.bottom.equalTo(chipImageView.snp.top)
         }
     }

@@ -5,6 +5,8 @@ import RxSwift
 import RxCocoa
 
 class DTBottomView: UIView {
+    
+    let selectedIndex = BehaviorRelay<Int>(value: 0)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,9 +42,9 @@ private extension DTBottomView {
         leftButton.titleLabel?.textAlignment = .left
         addSubview(leftButton)
         leftButton.snp.makeConstraints {
-            $0.size.equalTo(20.auto())
-            $0.top.equalToSuperview().inset(50.auto())
-            $0.leading.equalToSuperview().inset(20.auto())
+            $0.size.equalTo(20.zoom())
+            $0.top.equalToSuperview().inset(50.zoom())
+            $0.leading.equalToSuperview().inset(20.zoom())
         }
     }
 
@@ -64,10 +66,10 @@ private extension DTBottomView {
         
         addSubview(collectionView)
         collectionView.snp.makeConstraints {
-            $0.height.equalTo(100.auto())
-            $0.width.equalTo(255.auto())
+            $0.height.equalTo(100.zoom())
+            $0.width.equalTo(255.zoom())
             $0.centerY.equalTo(leftButton)
-            $0.leading.equalTo(leftButton.snp.trailing).offset(20.auto())
+            $0.leading.equalTo(leftButton.snp.trailing).offset(20.zoom())
         }
     }
     
@@ -76,7 +78,7 @@ private extension DTBottomView {
         addSubview(rightButton)
         rightButton.snp.makeConstraints {
             $0.size.equalTo(leftButton)
-            $0.trailing.equalToSuperview().inset(20.auto())
+            $0.trailing.equalToSuperview().inset(20.zoom())
             $0.centerY.equalTo(leftButton)
         }
     }
@@ -84,17 +86,17 @@ private extension DTBottomView {
     func setupCancelButton() {
         cancelButton.titleLabel?.textColor = .white
         cancelButton.titleLabel?.textAlignment = .center
-        cancelButton.titleLabel?.font = .systemFont(ofSize: 12.auto())
+        cancelButton.titleLabel?.font = .systemFont(ofSize: 12.zoom())
         cancelButton.backgroundColor = .systemGray
         cancelButton.layer.borderWidth = 1
         cancelButton.layer.borderColor = UIColor.white.cgColor
-        cancelButton.layer.cornerRadius = 4.auto()
+        cancelButton.layer.cornerRadius = 4.zoom()
         cancelButton.setTitle("CANCEL", for: .normal)
         addSubview(cancelButton)
         cancelButton.snp.makeConstraints {
-            $0.width.equalTo(70.auto())
-            $0.height.equalTo(35.auto())
-            $0.leading.equalToSuperview().inset(20.auto())
+            $0.width.equalTo(70.zoom())
+            $0.height.equalTo(35.zoom())
+            $0.leading.equalToSuperview().inset(20.zoom())
             $0.bottom.equalToSuperview()
         }
     }
@@ -102,16 +104,16 @@ private extension DTBottomView {
     func setupConfirmButton() {
         confirmButton.titleLabel?.textColor = .white
         confirmButton.titleLabel?.textAlignment = .center
-        confirmButton.titleLabel?.font = .systemFont(ofSize: 12.auto())
+        confirmButton.titleLabel?.font = .systemFont(ofSize: 12.zoom())
         confirmButton.backgroundColor = .systemBlue
         confirmButton.layer.borderWidth = 1
         confirmButton.layer.borderColor = UIColor.blue.cgColor
-        confirmButton.layer.cornerRadius = 4.auto()
+        confirmButton.layer.cornerRadius = 4.zoom()
         confirmButton.setTitle("CONFIRM", for: .normal)
         addSubview(confirmButton)
         confirmButton.snp.makeConstraints {
             $0.size.equalTo(cancelButton)
-            $0.trailing.equalToSuperview().inset(20.auto())
+            $0.trailing.equalToSuperview().inset(20.zoom())
             $0.bottom.equalToSuperview()
         }
     }
@@ -120,7 +122,15 @@ private extension DTBottomView {
 // MARK: - Bind
 private extension DTBottomView {
     func bind() {
-        
+        collectionView
+            .rx
+            .itemSelected
+            .withUnretained(self)
+            .subscribe(onNext: { owner, indexPath in
+                owner.selectedIndex.accept(indexPath.item)
+                owner.collectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -128,17 +138,22 @@ private extension DTBottomView {
 extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        5
+        ChipType.allCases.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: 80.auto(), height: 80.auto())
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        .init(width: 80.zoom(), height: 80.zoom())
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChipCell", for: indexPath) as? ChipCollectionViewCell else {
             return .init()
         }
+        let chipType = ChipType.allCases
+        cell.type = chipType[indexPath.item]
+        cell.didSelected.accept(indexPath.item == selectedIndex.value)
         return cell
     }
 }

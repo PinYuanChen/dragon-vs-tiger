@@ -35,11 +35,11 @@ private extension DTCountDownView {
     func setupUI() {
         backgroundColor = .clear
         drawShapeLayer(shapeLayer: backgroundShapeLayer,
-                       radius: 20.auto(),
+                       radius: 20.zoom(),
                        lineWidth: 3,
                        strokeColor: "00224C".hexColorWithAlpha(1.0))
         drawShapeLayer(shapeLayer: timeShapeLayer,
-                       radius: 20.auto(),
+                       radius: 20.zoom(),
                        lineWidth: 3,
                        strokeColor: .clear)
         setupTimeLabel()
@@ -51,7 +51,7 @@ private extension DTCountDownView {
         lineWidth: CGFloat,
         strokeColor: UIColor
     ) {
-        shapeLayer.path = UIBezierPath(arcCenter: .init(x: 20.auto(), y: 20.auto()),
+        shapeLayer.path = UIBezierPath(arcCenter: .init(x: 20.zoom(), y: 20.zoom()),
                                        radius: radius,
                                        startAngle: -90.degreesToRadians,
                                        endAngle: 270.degreesToRadians,
@@ -65,7 +65,7 @@ private extension DTCountDownView {
     }
     
     func setupTimeLabel() {
-        timeLabel.font = .systemFont(ofSize: 16.auto())
+        timeLabel.font = .systemFont(ofSize: 16.zoom())
         timeLabel.textAlignment = .center
         timeLabel.textColor = .systemGreen
         addSubview(timeLabel)

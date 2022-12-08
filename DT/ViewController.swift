@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import AutoInch
+import UIAdapter
 
 class ViewController: UIViewController {
     
@@ -55,12 +55,12 @@ private extension ViewController {
     func setupTitle() {
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
-        titleLabel.font = .boldSystemFont(ofSize: 24.auto())
+        titleLabel.font = .boldSystemFont(ofSize: 24.zoom())
         titleLabel.text = "龍虎"
         
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints {
-            $0.height.equalTo(30.auto())
+            $0.height.equalTo(30.zoom())
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.centerX.equalToSuperview()
         }
@@ -70,17 +70,17 @@ private extension ViewController {
         view.addSubview(countDownView)
         countDownView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom)
-            $0.size.equalTo(40.auto())
-            $0.leading.equalToSuperview().offset(40.auto())
+            $0.size.equalTo(40.zoom())
+            $0.leading.equalToSuperview().offset(40.zoom())
         }
     }
     
     func setupAnimationView() {
         view.addSubview(animationView)
         animationView.snp.makeConstraints {
-            $0.width.equalTo(350.auto())
-            $0.height.equalTo(250.auto())
-            $0.top.equalTo(titleLabel.snp.bottom).offset(50.auto())
+            $0.width.equalTo(350.zoom())
+            $0.height.equalTo(250.zoom())
+            $0.top.equalTo(titleLabel.snp.bottom).offset(50.zoom())
             $0.centerX.equalToSuperview()
         }
     }
@@ -89,8 +89,8 @@ private extension ViewController {
         view.addSubview(playView)
         playView.snp.makeConstraints {
             $0.width.centerX.equalToSuperview()
-            $0.height.equalTo(150.auto())
-            $0.top.equalTo(animationView.snp.bottom).offset(20.auto())
+            $0.height.equalTo(150.zoom())
+            $0.top.equalTo(animationView.snp.bottom).offset(20.zoom())
         }
     }
     
@@ -98,8 +98,8 @@ private extension ViewController {
         view.addSubview(bottomView)
         bottomView.snp.makeConstraints {
             $0.leading.centerX.equalToSuperview()
-            $0.height.equalTo(150.auto())
-            $0.bottom.equalToSuperview()
+            $0.height.equalTo(150.zoom())
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }

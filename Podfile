@@ -6,7 +6,7 @@ target 'DT' do
   use_frameworks!
 
   # Pods for DT
-  pod 'AutoInch', '2.4.1'
+  pod 'UIAdapter'
   pod 'SnapKit', '4.2.0'
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
