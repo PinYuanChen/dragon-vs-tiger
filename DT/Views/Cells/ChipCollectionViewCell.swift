@@ -48,6 +48,7 @@ class ChipCollectionViewCell: UICollectionViewCell {
         get { _type.value }
         set { _type.accept(newValue) }
     }
+    let didSelected = PublishRelay<Bool>()
     var reuseDisposeBag = DisposeBag()
 
     override init(frame: CGRect) {
@@ -111,8 +112,7 @@ private extension ChipCollectionViewCell {
             .drive(chipLabel.rx.text)
             .disposed(by: disposeBag)
         
-        rx
-            .observe(\.isSelected)
+        didSelected
             .withUnretained(self)
             .subscribe(onNext: { owner, isSelected in
                 if isSelected {
@@ -122,5 +122,17 @@ private extension ChipCollectionViewCell {
                 }
             })
             .disposed(by: disposeBag)
+        
+//        rx
+//            .observe(\.isSelected)
+//            .withUnretained(self)
+//            .subscribe(onNext: { owner, isSelected in
+//                if isSelected {
+//                    owner.centerYConstraint?.update(offset: -5.zoom())
+//                } else {
+//                    owner.centerYConstraint?.update(offset: 0)
+//                }
+//            })
+//            .disposed(by: disposeBag)
     }
 }

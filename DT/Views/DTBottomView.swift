@@ -7,7 +7,6 @@ import RxCocoa
 class DTBottomView: UIView {
     
     let selectedIndex = BehaviorRelay<Int>(value: 0)
-    let selectedChip = PublishRelay<Void>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -126,8 +125,10 @@ private extension DTBottomView {
         collectionView
             .rx
             .itemSelected
-            .subscribe(onNext: { [weak self] indexPath in
-                print(indexPath)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, indexPath in
+                owner.selectedIndex.accept(indexPath.item)
+                owner.collectionView.reloadData()
             })
             .disposed(by: disposeBag)
     }
@@ -140,7 +141,9 @@ extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         ChipType.allCases.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         .init(width: 80.zoom(), height: 80.zoom())
     }
     
@@ -150,6 +153,7 @@ extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         }
         let chipType = ChipType.allCases
         cell.type = chipType[indexPath.item]
+        cell.didSelected.accept(indexPath.item == selectedIndex.value)
         return cell
     }
 }
