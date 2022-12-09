@@ -122,9 +122,26 @@ private extension ViewController {
                 owner.viewModel.input.getCurrentTime()
             })
             .disposed(by: disposeBag)
+        
+        bottomView
+            .selectedIndex
+            .withUnretained(viewModel)
+            .subscribe(onNext: { owner, index in
+                owner.input.getSelectedChipIndex(index)
+            })
+            .disposed(by: disposeBag)
     }
     
     func bind(viewModel: DTViewModelPrototype) {
+        
+        viewModel
+            .output
+            .playOptions
+            .withUnretained(self)
+            .subscribe(onNext: { owner, options in
+                owner.playView.playOptions = options
+            })
+            .disposed(by: disposeBag)
         
         viewModel
             .output
@@ -161,6 +178,10 @@ private extension ViewController {
                 }
             })
             .disposed(by: disposeBag)
+        
+        viewModel
+            .input
+            .getPlayOptions()
     }
 }
 

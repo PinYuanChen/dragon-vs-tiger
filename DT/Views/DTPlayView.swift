@@ -6,6 +6,14 @@ import RxCocoa
 
 class DTPlayView: UIView {
     
+    var playOptions: [DTPlayModel] {
+        get {
+            _playOptions.value
+        }
+        set {
+            _playOptions.accept(newValue)
+        }
+    }
     let showWinPlay = PublishRelay<String>()
 
     override init(frame: CGRect) {
@@ -18,6 +26,7 @@ class DTPlayView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private let _playOptions = BehaviorRelay<[DTPlayModel]>(value: [])
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
@@ -57,17 +66,26 @@ private extension DTPlayView {
 // MARK: - Bind
 private extension DTPlayView {
     func bind() {
-        
+        _playOptions
+            .filter { $0.count > 0 }
+            .withUnretained(collectionView)
+            .subscribe(onNext: { collectionView, options in
+                print(options)
+                collectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
 }
 
 extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        3
+        _playOptions.value.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenWidth = UIScreen.main.bounds.width - 20
         let padding: CGFloat = CGFloat(2) * 10
         let width = screenWidth - padding
@@ -81,7 +99,7 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
                                  for: indexPath) as? DTPlayCollectionViewCell else {
             return .init()
         }
-        
+        cell.playOptionInfo = _playOptions.value[indexPath.item]
         return cell
     }
     
