@@ -123,6 +123,14 @@ private extension ViewController {
             })
             .disposed(by: disposeBag)
         
+        playView
+            .selectedPlay
+            .withUnretained(self)
+            .subscribe(onNext: { owner, selectedPlay in
+                
+            })
+            .disposed(by: disposeBag)
+        
         bottomView
             .selectedIndex
             .withUnretained(viewModel)

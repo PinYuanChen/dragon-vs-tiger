@@ -7,12 +7,15 @@ import RxCocoa
 
 class DTPlayCollectionViewCell: UICollectionViewCell {
     
-    let showWinPlay = PublishRelay<String>()
-    var reuseDisposeBag = DisposeBag()
+    // Input
     var playOptionInfo: DTPlayModel? {
         get { _playOptionInfo.value }
         set { _playOptionInfo.accept(newValue) }
     }
+    var reuseDisposeBag = DisposeBag()
+    
+    // Output
+    let didSelectedPlay = PublishRelay<SelectedPlayModel>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

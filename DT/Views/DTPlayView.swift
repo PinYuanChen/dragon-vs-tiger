@@ -6,6 +6,7 @@ import RxCocoa
 
 class DTPlayView: UIView {
     
+    // Input
     var playOptions: [DTPlayModel] {
         get {
             _playOptions.value
@@ -14,7 +15,9 @@ class DTPlayView: UIView {
             _playOptions.accept(newValue)
         }
     }
-    let showWinPlay = PublishRelay<String>()
+    
+    // Output
+    let selectedPlay = PublishRelay<SelectedPlayModel>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,7 +73,6 @@ private extension DTPlayView {
             .filter { $0.count > 0 }
             .withUnretained(collectionView)
             .subscribe(onNext: { collectionView, options in
-                print(options)
                 collectionView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -100,6 +102,10 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
             return .init()
         }
         cell.playOptionInfo = _playOptions.value[indexPath.item]
+        cell
+            .didSelectedPlay
+            .bind(to: selectedPlay)
+            .disposed(by: cell.reuseDisposeBag)
         return cell
     }
     
