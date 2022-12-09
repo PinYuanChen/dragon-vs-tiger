@@ -40,6 +40,7 @@ class DTViewModel: DTViewModelPrototype {
     private let disposeBag = DisposeBag()
 }
 
+// MARK: - Output
 extension DTViewModel: DTViewModelOutput {
     
     var playOptions: Observable<[DTPlayModel]> {
@@ -63,6 +64,7 @@ extension DTViewModel: DTViewModelOutput {
     }
 }
 
+// MARK: Input
 extension DTViewModel: DTViewModelInput {
     
     func getPlayOptions() {
@@ -109,6 +111,7 @@ extension DTViewModel: DTViewModelInput {
     }
 }
 
+// MARK: - Private functions
 private extension DTViewModel {
     func getSuitResult() -> SuitModel {
         let suit = Suit(rawValue: .random(in: 0...3)) ?? .club
