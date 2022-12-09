@@ -99,7 +99,7 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
                                  for: indexPath) as? DTPlayCollectionViewCell else {
             return .init()
         }
-        
+        cell.playOptionInfo = _playOptions.value[indexPath.item]
         return cell
     }
     

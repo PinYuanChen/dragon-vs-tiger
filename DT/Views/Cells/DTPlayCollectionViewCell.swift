@@ -9,6 +9,10 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
     
     let showWinPlay = PublishRelay<String>()
     var reuseDisposeBag = DisposeBag()
+    var playOptionInfo: DTPlayModel? {
+        get { _playOptionInfo.value }
+        set { _playOptionInfo.accept(newValue) }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,11 +29,13 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
         reuseDisposeBag = .init()
     }
     
+    private let _playOptionInfo = BehaviorRelay<DTPlayModel?>(value: nil)
     private let flashView = FlashView(frame: .zero)
     private let titleLabel = UILabel()
     private let oddsLabel = UILabel()
     private let chipInfoView = ChipInfoView(frame: .zero)
     private let betMoneyLabel = UILabel()
+    private let disposeBag = DisposeBag()
 }
 
 
@@ -112,6 +118,13 @@ private extension DTPlayCollectionViewCell {
 // MARK: - Bind
 private extension DTPlayCollectionViewCell {
     func bind() {
-        
+        _playOptionInfo
+            .compactMap { $0 }
+            .withUnretained(self)
+            .subscribe(onNext: { owner, play in
+                owner.titleLabel.text = play.playCode.title
+                owner.oddsLabel.text = play.odds
+            })
+            .disposed(by: disposeBag)
     }
 }
