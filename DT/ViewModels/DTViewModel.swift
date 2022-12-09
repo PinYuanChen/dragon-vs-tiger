@@ -20,6 +20,7 @@ protocol DTViewModelInput {
     func getGameResult()
     func getWinPlay()
     func getCurrentTime()
+    func getSelectedChipIndex(_ index: Int)
 }
 
 class DTViewModel: DTViewModelPrototype {
@@ -32,6 +33,7 @@ class DTViewModel: DTViewModelPrototype {
     private let _showCurrentTime = PublishRelay<Void>()
     private var winner = ""
     private let _showWinPlay = PublishRelay<String>()
+    private let _selectedChipIndex = BehaviorRelay<Int>(value: 0)
     private let disposeBag = DisposeBag()
 }
 
@@ -85,6 +87,10 @@ extension DTViewModel: DTViewModelInput {
     
     func getWinPlay() {
         _showWinPlay.accept(winner)
+    }
+    
+    func getSelectedChipIndex(_ index: Int) {
+        _selectedChipIndex.accept(index)
     }
 }
 

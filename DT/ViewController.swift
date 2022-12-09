@@ -122,6 +122,14 @@ private extension ViewController {
                 owner.viewModel.input.getCurrentTime()
             })
             .disposed(by: disposeBag)
+        
+        bottomView
+            .selectedIndex
+            .withUnretained(viewModel)
+            .subscribe(onNext: { owner, index in
+                owner.input.getSelectedChipIndex(index)
+            })
+            .disposed(by: disposeBag)
     }
     
     func bind(viewModel: DTViewModelPrototype) {
