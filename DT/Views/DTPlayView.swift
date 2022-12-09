@@ -18,7 +18,7 @@ class DTPlayView: UIView {
     
     // Output
     let selectedPlay = PublishRelay<SelectedPlayModel>()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -28,7 +28,7 @@ class DTPlayView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private let _playOptions = BehaviorRelay<[DTPlayModel]>(value: [])
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
@@ -38,11 +38,11 @@ class DTPlayView: UIView {
 
 // MARK: - Setup UI
 private extension DTPlayView {
-
+    
     func setupUI() {
         setupCollectionView()
     }
-
+    
     func setupCollectionView() {
         let flowLayout: UICollectionViewFlowLayout = .init()
         flowLayout.scrollDirection = .vertical
@@ -74,6 +74,24 @@ private extension DTPlayView {
             .withUnretained(collectionView)
             .subscribe(onNext: { collectionView, options in
                 collectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
+        collectionView
+            .rx
+            .itemSelected
+            .withUnretained(self)
+            .subscribe(onNext: { owner, index in
+                guard let cell = owner
+                    .collectionView
+                    .dequeueReusableCell(
+                        withReuseIdentifier: owner.identifier,
+                        for: index
+                    ) as? DTPlayCollectionViewCell else {
+                    return
+                }
+                
+//                cell.didSelectedPlay.accept()
             })
             .disposed(by: disposeBag)
     }
