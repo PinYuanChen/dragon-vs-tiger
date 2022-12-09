@@ -136,6 +136,15 @@ private extension ViewController {
         
         viewModel
             .output
+            .playOptions
+            .withUnretained(self)
+            .subscribe(onNext: { owner, options in
+                owner.playView.playOptions = options
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
             .lastGameResult
             .bind(to: animationView.showResultWithoutAnimation)
             .disposed(by: disposeBag)
@@ -169,6 +178,10 @@ private extension ViewController {
                 }
             })
             .disposed(by: disposeBag)
+        
+        viewModel
+            .input
+            .getPlayOptions()
     }
 }
 
