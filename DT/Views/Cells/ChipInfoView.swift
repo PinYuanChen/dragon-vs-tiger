@@ -5,6 +5,11 @@ import RxSwift
 import RxCocoa
 
 class ChipInfoView: UIView {
+    
+    var moneyString: String? {
+        get { _moneyString.value }
+        set { _moneyString.accept(newValue) }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -16,6 +21,7 @@ class ChipInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private let _moneyString = BehaviorRelay<String?>(value: nil)
     private let chipImageView = UIImageView()
     private let moneyLabel = UILabel()
     private let disposeBag = DisposeBag()
@@ -50,7 +56,6 @@ private extension ChipInfoView {
         moneyLabel.layer.borderWidth = 1.zoom()
         moneyLabel.layer.cornerRadius = 4.zoom()
         moneyLabel.layer.masksToBounds = true
-        moneyLabel.text = "999K"
         
         addSubview(moneyLabel)
         moneyLabel.snp.makeConstraints {
@@ -64,6 +69,10 @@ private extension ChipInfoView {
 // MARK: - Bind
 private extension ChipInfoView {
     func bind() {
-        
+        _moneyString
+            .compactMap { $0 }
+            .asDriver(onErrorJustReturn: "")
+            .drive(moneyLabel.rx.text)
+            .disposed(by: disposeBag)
     }
 }

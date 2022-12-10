@@ -16,6 +16,11 @@ class DTPlayView: UIView {
         }
     }
     
+    var updateSelectedPlayModels: [UpdateSelectedPlayModel] {
+        get { _updateSelectedPlayModels.value }
+        set { _updateSelectedPlayModels.accept(newValue) }
+    }
+    
     // Output
     let selectedPlay = PublishRelay<SelectedPlayModel>()
     
@@ -30,6 +35,7 @@ class DTPlayView: UIView {
     }
     
     private let _playOptions = BehaviorRelay<DTPlayCateModel?>(value: nil)
+    private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]>(value: [])
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
@@ -47,7 +53,6 @@ private extension DTPlayView {
         let flowLayout: UICollectionViewFlowLayout = .init()
         flowLayout.scrollDirection = .vertical
         flowLayout.sectionInset = .zero
-        flowLayout.minimumLineSpacing = 10
         flowLayout.minimumInteritemSpacing = 10
         
         collectionView.delegate = self
@@ -57,6 +62,7 @@ private extension DTPlayView {
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInset = .init(top: 0, left: 10, bottom: 0, right: 10)
         collectionView.register(DTPlayCollectionViewCell.self, forCellWithReuseIdentifier: identifier)
         
         addSubview(collectionView)
@@ -92,9 +98,9 @@ private extension DTPlayView {
                     return
                 }
                 
-                cell.didSelectedPlay.accept(.init(cateCode: cateCode,
-                                                  playCode: playCode.rawValue,
-                                                  endPoint: .zero))
+                owner.selectedPlay.accept(.init(cateCode: cateCode,
+                                                playCode: playCode.rawValue,
+                                                endPoint: .zero))
             })
             .disposed(by: disposeBag)
     }
@@ -127,6 +133,9 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
         cell
             .didSelectedPlay
             .bind(to: selectedPlay)
+            .disposed(by: cell.reuseDisposeBag)
+        _updateSelectedPlayModels
+            .bind(to: cell.updateSelectedPlayModels)
             .disposed(by: cell.reuseDisposeBag)
         return cell
     }
