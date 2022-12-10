@@ -47,7 +47,7 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
     private let titleLabel = UILabel()
     private let oddsLabel = UILabel()
     private let chipInfoView = ChipInfoView(frame: .zero)
-    private let betMoneyLabel = UILabel()
+    private let hadBetLabel = UILabel()
     private let disposeBag = DisposeBag()
 }
 
@@ -66,7 +66,7 @@ private extension DTPlayCollectionViewCell {
         setupTitleLabel()
         setupOddsLabel()
         setupChipInfoView()
-        setupBetMoneyLabel()
+        setuphadBetLabel()
     }
     
     func setupFlashView() {
@@ -107,18 +107,19 @@ private extension DTPlayCollectionViewCell {
         }
     }
     
-    func setupBetMoneyLabel() {
-        betMoneyLabel.layer.borderColor = UIColor.white.cgColor
-        betMoneyLabel.layer.borderWidth = 1
-        betMoneyLabel.backgroundColor = .systemGreen.withAlphaComponent(0.5)
-        betMoneyLabel.textColor = .green
-        betMoneyLabel.layer.cornerRadius = 4.zoom()
-        betMoneyLabel.layer.masksToBounds = true
-        betMoneyLabel.textAlignment = .center
-        betMoneyLabel.font = .systemFont(ofSize: 14.zoom())
+    func setuphadBetLabel() {
+        hadBetLabel.isHidden = true
+        hadBetLabel.layer.borderColor = UIColor.white.cgColor
+        hadBetLabel.layer.borderWidth = 1
+        hadBetLabel.backgroundColor = .systemGreen.withAlphaComponent(0.5)
+        hadBetLabel.textColor = .green
+        hadBetLabel.layer.cornerRadius = 4.zoom()
+        hadBetLabel.layer.masksToBounds = true
+        hadBetLabel.textAlignment = .center
+        hadBetLabel.font = .systemFont(ofSize: 14.zoom())
         
-        contentView.addSubview(betMoneyLabel)
-        betMoneyLabel.snp.makeConstraints {
+        contentView.addSubview(hadBetLabel)
+        hadBetLabel.snp.makeConstraints {
             $0.leading.top.equalToSuperview().inset(10.zoom())
             $0.height.equalTo(20.zoom())
             $0.width.equalTo(50.zoom())
@@ -142,8 +143,9 @@ private extension DTPlayCollectionViewCell {
             .filter { !$0.isEmpty }
             .withLatestFrom(_playOptionInfo.compactMap { $0 }) { ($0, $1) }
             .subscribe(onNext: { [weak self] (selectedPlayModels, playOptionInfo) in
-                guard let self = self,
-                      let model = selectedPlayModels.filter({ $0.playCode == playOptionInfo.playCode.rawValue }).first else {
+                guard let self = self else { return }
+                guard let model = selectedPlayModels.filter({ $0.playCode == playOptionInfo.playCode.rawValue }).first else {
+                    self.chipInfoView.moneyString = ""
                     return
                 }
                 

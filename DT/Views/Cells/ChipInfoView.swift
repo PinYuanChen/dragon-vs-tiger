@@ -74,5 +74,12 @@ private extension ChipInfoView {
             .asDriver(onErrorJustReturn: "")
             .drive(moneyLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        _moneyString
+            .compactMap { $0 }
+            .map { $0.isEmpty }
+            .asDriver(onErrorJustReturn: true)
+            .drive(rx.isHidden)
+            .disposed(by: disposeBag)
     }
 }
