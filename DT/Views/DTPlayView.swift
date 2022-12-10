@@ -7,7 +7,7 @@ import RxCocoa
 class DTPlayView: UIView {
     
     // Input
-    var playOptions: [DTPlayModel] {
+    var playOptions: DTPlayCateModel? {
         get {
             _playOptions.value
         }
@@ -29,7 +29,7 @@ class DTPlayView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let _playOptions = BehaviorRelay<[DTPlayModel]>(value: [])
+    private let _playOptions = BehaviorRelay<DTPlayCateModel?>(value: nil)
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
@@ -70,7 +70,8 @@ private extension DTPlayView {
 private extension DTPlayView {
     func bind() {
         _playOptions
-            .filter { $0.count > 0 }
+            .compactMap { $0 }
+            .filter { !$0.playType.isEmpty }
             .withUnretained(collectionView)
             .subscribe(onNext: { collectionView, options in
                 collectionView.reloadData()
@@ -82,16 +83,18 @@ private extension DTPlayView {
             .itemSelected
             .withUnretained(self)
             .subscribe(onNext: { owner, index in
-                guard let cell = owner
-                    .collectionView
-                    .dequeueReusableCell(
-                        withReuseIdentifier: owner.identifier,
-                        for: index
-                    ) as? DTPlayCollectionViewCell else {
+                guard let cell = owner.collectionView.dequeueReusableCell(
+                    withReuseIdentifier: owner.identifier,
+                    for: index
+                ) as? DTPlayCollectionViewCell,
+                      let cateCode = owner.playOptions?.cateCode,
+                      let playCode = owner.playOptions?.playType[index.item].playCode else {
                     return
                 }
                 
-//                cell.didSelectedPlay.accept()
+                cell.didSelectedPlay.accept(.init(cateCode: cateCode,
+                                                  playCode: playCode.rawValue,
+                                                  endPoint: .zero))
             })
             .disposed(by: disposeBag)
     }
@@ -100,7 +103,7 @@ private extension DTPlayView {
 extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        _playOptions.value.count
+        _playOptions.value?.playType.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -116,10 +119,11 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: identifier,
-                                 for: indexPath) as? DTPlayCollectionViewCell else {
+                                 for: indexPath) as? DTPlayCollectionViewCell,
+              let playType = _playOptions.value?.playType else {
             return .init()
         }
-        cell.playOptionInfo = _playOptions.value[indexPath.item]
+        cell.playOptionInfo = playType[indexPath.item]
         cell
             .didSelectedPlay
             .bind(to: selectedPlay)

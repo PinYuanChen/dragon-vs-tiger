@@ -9,7 +9,7 @@ protocol DTViewModelPrototype {
 }
 
 protocol DTViewModelOutput {
-    var playOptions: Observable<[DTPlayModel]> { get }
+    var playOptions: Observable<DTPlayCateModel> { get }
     var lastGameResult: Observable<GameResultModel> { get }
     var gameResult: Observable<GameResultModel> { get }
     var showCurrentTime: Observable<Void> { get }
@@ -32,7 +32,7 @@ class DTViewModel: DTViewModelPrototype {
     var output: DTViewModelOutput { self }
     var input: DTViewModelInput { self }
     
-    private let _playOptions = PublishRelay<[DTPlayModel]>()
+    private let _playOptions = PublishRelay<DTPlayCateModel>()
     private let _lastGameResult = PublishRelay<GameResultModel>()
     private let _gameResult = BehaviorRelay<GameResultModel?>(value: nil)
     private let _showCurrentTime = PublishRelay<Void>()
@@ -49,7 +49,7 @@ class DTViewModel: DTViewModelPrototype {
 // MARK: - Output
 extension DTViewModel: DTViewModelOutput {
     
-    var playOptions: Observable<[DTPlayModel]> {
+    var playOptions: Observable<DTPlayCateModel> {
         _playOptions.asObservable()
     }
     
@@ -143,7 +143,7 @@ private extension DTViewModel {
         return .init(suit: suit, number: num)
     }
     
-    func loadJsonData(_ cateCode: String) -> [DTPlayModel]? {
+    func loadJsonData(_ cateCode: String) -> DTPlayCateModel? {
         
         let gameModel: DTPlayCateModel
         
@@ -155,7 +155,7 @@ private extension DTViewModel {
         
         do {
             gameModel = try JSONDecoder().decode(DTPlayCateModel.self, from: data)
-            return gameModel.playType
+            return gameModel
         } catch {
             assert(false, "\(error)")
             return nil
