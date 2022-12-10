@@ -2,3 +2,5 @@
 *.xcbkptlist
 .DS_Store
 DT.xcodeproj/xcuserdata/patrick.xcuserdatad/xcschemes/xcschememanagement.plist
+DT.xcodeproj/xcuserdata/championchen.xcuserdatad/xcschemes/xcschememanagement.plist
+Pods/Pods.xcodeproj/xcuserdata/championchen.xcuserdatad/xcschemes/xcschememanagement.plist

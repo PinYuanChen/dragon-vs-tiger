@@ -123,6 +123,14 @@ private extension ViewController {
             })
             .disposed(by: disposeBag)
         
+        playView
+            .selectedPlay
+            .withUnretained(viewModel)
+            .subscribe(onNext: { owner, selectedPlay in
+                owner.input.getSelectedPlay(selectedPlay)
+            })
+            .disposed(by: disposeBag)
+        
         bottomView
             .selectedIndex
             .withUnretained(viewModel)
@@ -176,6 +184,15 @@ private extension ViewController {
                         repeats: true
                     )
                 }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
+            .updateSelectedPlayModels
+            .withUnretained(playView)
+            .subscribe(onNext: { owner, models in
+                owner.updateSelectedPlayModels = models
             })
             .disposed(by: disposeBag)
         

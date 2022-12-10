@@ -6,7 +6,8 @@ import RxCocoa
 
 class DTPlayView: UIView {
     
-    var playOptions: [DTPlayModel] {
+    // Input
+    var playOptions: DTPlayCateModel? {
         get {
             _playOptions.value
         }
@@ -14,8 +15,15 @@ class DTPlayView: UIView {
             _playOptions.accept(newValue)
         }
     }
-    let showWinPlay = PublishRelay<String>()
-
+    
+    var updateSelectedPlayModels: [UpdateSelectedPlayModel] {
+        get { _updateSelectedPlayModels.value }
+        set { _updateSelectedPlayModels.accept(newValue) }
+    }
+    
+    // Output
+    let selectedPlay = PublishRelay<SelectedPlayModel>()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -25,8 +33,9 @@ class DTPlayView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    private let _playOptions = BehaviorRelay<[DTPlayModel]>(value: [])
+    
+    private let _playOptions = BehaviorRelay<DTPlayCateModel?>(value: nil)
+    private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]>(value: [])
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
@@ -35,16 +44,15 @@ class DTPlayView: UIView {
 
 // MARK: - Setup UI
 private extension DTPlayView {
-
+    
     func setupUI() {
         setupCollectionView()
     }
-
+    
     func setupCollectionView() {
         let flowLayout: UICollectionViewFlowLayout = .init()
         flowLayout.scrollDirection = .vertical
         flowLayout.sectionInset = .zero
-        flowLayout.minimumLineSpacing = 10
         flowLayout.minimumInteritemSpacing = 10
         
         collectionView.delegate = self
@@ -54,6 +62,7 @@ private extension DTPlayView {
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.contentInset = .init(top: 0, left: 10, bottom: 0, right: 10)
         collectionView.register(DTPlayCollectionViewCell.self, forCellWithReuseIdentifier: identifier)
         
         addSubview(collectionView)
@@ -67,11 +76,31 @@ private extension DTPlayView {
 private extension DTPlayView {
     func bind() {
         _playOptions
-            .filter { $0.count > 0 }
+            .compactMap { $0 }
+            .filter { !$0.playType.isEmpty }
             .withUnretained(collectionView)
             .subscribe(onNext: { collectionView, options in
-                print(options)
                 collectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
+        collectionView
+            .rx
+            .itemSelected
+            .withUnretained(self)
+            .subscribe(onNext: { owner, index in
+                guard let cell = owner.collectionView.dequeueReusableCell(
+                    withReuseIdentifier: owner.identifier,
+                    for: index
+                ) as? DTPlayCollectionViewCell,
+                      let cateCode = owner.playOptions?.cateCode,
+                      let playCode = owner.playOptions?.playType[index.item].playCode else {
+                    return
+                }
+                
+                owner.selectedPlay.accept(.init(cateCode: cateCode,
+                                                playCode: playCode.rawValue,
+                                                endPoint: .zero))
             })
             .disposed(by: disposeBag)
     }
@@ -80,7 +109,7 @@ private extension DTPlayView {
 extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        _playOptions.value.count
+        _playOptions.value?.playType.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -96,10 +125,18 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: identifier,
-                                 for: indexPath) as? DTPlayCollectionViewCell else {
+                                 for: indexPath) as? DTPlayCollectionViewCell,
+              let playType = _playOptions.value?.playType else {
             return .init()
         }
-        cell.playOptionInfo = _playOptions.value[indexPath.item]
+        cell.playOptionInfo = playType[indexPath.item]
+        cell
+            .didSelectedPlay
+            .bind(to: selectedPlay)
+            .disposed(by: cell.reuseDisposeBag)
+        _updateSelectedPlayModels
+            .bind(to: cell.updateSelectedPlayModels)
+            .disposed(by: cell.reuseDisposeBag)
         return cell
     }
     

@@ -19,7 +19,7 @@
 		9B8DC39329330D9400E81CB3 /* DTViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC39229330D9400E81CB3 /* DTViewModel.swift */; };
 		9BA08FAF293B986100065DC9 /* ChipCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA08FAE293B986100065DC9 /* ChipCollectionViewCell.swift */; };
 		9BA08FB1293C946700065DC9 /* DTPlay.json in Resources */ = {isa = PBXBuildFile; fileRef = 9BA08FB0293C946700065DC9 /* DTPlay.json */; };
-		9BA08FB3293C96E600065DC9 /* DTPlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA08FB2293C96E500065DC9 /* DTPlayModel.swift */; };
+		9BA08FB3293C96E600065DC9 /* DTPlayCateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA08FB2293C96E500065DC9 /* DTPlayCateModel.swift */; };
 		9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F943292E63D500067053 /* AppDelegate.swift */; };
 		9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F945292E63D500067053 /* SceneDelegate.swift */; };
 		9BE5F948292E63D500067053 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE5F947292E63D500067053 /* ViewController.swift */; };
@@ -35,6 +35,7 @@
 		A3F523B14C7B4DB7A0046021 /* Pods_DT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0965DEA51E33CE0D3BAC2C /* Pods_DT.framework */; };
 		AF2809038E0F8918508C4611 /* Pods_DTTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E81365B963834B31E6A69C9 /* Pods_DTTests.framework */; };
 		CD78251C2935F64C00114AA7 /* GameResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD78251B2935F64C00114AA7 /* GameResult.swift */; };
+		CDF82B722943213600E5E6A9 /* SelectedPlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF82B712943213600E5E6A9 /* SelectedPlayModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,7 +72,7 @@
 		9B8DC39229330D9400E81CB3 /* DTViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTViewModel.swift; sourceTree = "<group>"; };
 		9BA08FAE293B986100065DC9 /* ChipCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChipCollectionViewCell.swift; sourceTree = "<group>"; };
 		9BA08FB0293C946700065DC9 /* DTPlay.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DTPlay.json; sourceTree = "<group>"; };
-		9BA08FB2293C96E500065DC9 /* DTPlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPlayModel.swift; sourceTree = "<group>"; };
+		9BA08FB2293C96E500065DC9 /* DTPlayCateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPlayCateModel.swift; sourceTree = "<group>"; };
 		9BE5F940292E63D500067053 /* DT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BE5F943292E63D500067053 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9BE5F945292E63D500067053 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +92,7 @@
 		9FB022B2887EC87A053820D5 /* Pods-DTTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DTTests.release.xcconfig"; path = "Target Support Files/Pods-DTTests/Pods-DTTests.release.xcconfig"; sourceTree = "<group>"; };
 		BC0965DEA51E33CE0D3BAC2C /* Pods_DT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD78251B2935F64C00114AA7 /* GameResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameResult.swift; sourceTree = "<group>"; };
+		CDF82B712943213600E5E6A9 /* SelectedPlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedPlayModel.swift; sourceTree = "<group>"; };
 		D79802E3765C0E7B6EEAEB86 /* Pods-DTTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DTTests.debug.xcconfig"; path = "Target Support Files/Pods-DTTests/Pods-DTTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DEAC18784810398BE99720AF /* Pods-DT-DTUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DT-DTUITests.release.xcconfig"; path = "Target Support Files/Pods-DT-DTUITests/Pods-DT-DTUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,7 +164,8 @@
 			isa = PBXGroup;
 			children = (
 				9B8DC3822931EFB300E81CB3 /* SuitModel.swift */,
-				9BA08FB2293C96E500065DC9 /* DTPlayModel.swift */,
+				9BA08FB2293C96E500065DC9 /* DTPlayCateModel.swift */,
+				CDF82B712943213600E5E6A9 /* SelectedPlayModel.swift */,
 				CD78251B2935F64C00114AA7 /* GameResult.swift */,
 			);
 			path = Models;
@@ -510,8 +513,9 @@
 				9BE67CD82931E45E001E00B3 /* DTBottomView.swift in Sources */,
 				CD78251C2935F64C00114AA7 /* GameResult.swift in Sources */,
 				9B8DC37F2931EEA000E81CB3 /* DTPokerResultView.swift in Sources */,
-				9BA08FB3293C96E600065DC9 /* DTPlayModel.swift in Sources */,
+				9BA08FB3293C96E600065DC9 /* DTPlayCateModel.swift in Sources */,
 				9BE67CD62931E450001E00B3 /* DTPlayView.swift in Sources */,
+				CDF82B722943213600E5E6A9 /* SelectedPlayModel.swift in Sources */,
 				9BE5F944292E63D500067053 /* AppDelegate.swift in Sources */,
 				9B8DC3832931EFB300E81CB3 /* SuitModel.swift in Sources */,
 				9BE5F946292E63D500067053 /* SceneDelegate.swift in Sources */,

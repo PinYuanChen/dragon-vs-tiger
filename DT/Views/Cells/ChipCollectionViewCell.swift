@@ -122,17 +122,5 @@ private extension ChipCollectionViewCell {
                 }
             })
             .disposed(by: disposeBag)
-        
-//        rx
-//            .observe(\.isSelected)
-//            .withUnretained(self)
-//            .subscribe(onNext: { owner, isSelected in
-//                if isSelected {
-//                    owner.centerYConstraint?.update(offset: -5.zoom())
-//                } else {
-//                    owner.centerYConstraint?.update(offset: 0)
-//                }
-//            })
-//            .disposed(by: disposeBag)
     }
 }
