@@ -146,6 +146,14 @@ private extension ViewController {
                 owner.input.cancelReadyBet()
             })
             .disposed(by: disposeBag)
+        
+        bottomView
+            .didTappedConfirmButton
+            .withUnretained(viewModel)
+            .subscribe(onNext: { owner, _ in
+                owner.input.confirmReadyBet()
+            })
+            .disposed(by: disposeBag)
     }
     
     func bind(viewModel: DTViewModelPrototype) {
