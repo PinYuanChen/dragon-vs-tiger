@@ -140,7 +140,6 @@ private extension DTPlayCollectionViewCell {
             .disposed(by: disposeBag)
         
         _updateSelectedPlayModels
-            .filter { !$0.isEmpty }
             .withLatestFrom(_playOptionInfo.compactMap { $0 }) { ($0, $1) }
             .subscribe(onNext: { [weak self] (selectedPlayModels, playOptionInfo) in
                 guard let self = self else { return }

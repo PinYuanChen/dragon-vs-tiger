@@ -7,6 +7,7 @@ import RxCocoa
 class DTBottomView: UIView {
     
     let selectedIndex = BehaviorRelay<Int>(value: 0)
+    let didTappedCancelButton = PublishRelay<Void>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -130,6 +131,12 @@ private extension DTBottomView {
                 owner.selectedIndex.accept(indexPath.item)
                 owner.collectionView.reloadData()
             })
+            .disposed(by: disposeBag)
+        
+        cancelButton
+            .rx
+            .tap
+            .bind(to: didTappedCancelButton)
             .disposed(by: disposeBag)
     }
 }

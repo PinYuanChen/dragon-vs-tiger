@@ -138,6 +138,14 @@ private extension ViewController {
                 owner.input.getSelectedChipIndex(index)
             })
             .disposed(by: disposeBag)
+        
+        bottomView
+            .didTappedCancelButton
+            .withUnretained(viewModel)
+            .subscribe(onNext: { owner, _ in
+                owner.input.cancelReadyBet()
+            })
+            .disposed(by: disposeBag)
     }
     
     func bind(viewModel: DTViewModelPrototype) {

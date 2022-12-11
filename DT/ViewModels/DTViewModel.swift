@@ -25,6 +25,7 @@ protocol DTViewModelInput {
     func getCurrentTime()
     func getSelectedChipIndex(_ index: Int)
     func getSelectedPlay(_ play: SelectedPlayModel)
+    func cancelReadyBet()
 }
 
 class DTViewModel: DTViewModelPrototype {
@@ -126,11 +127,18 @@ extension DTViewModel: DTViewModelInput {
             $0.playCode == play.playCode
         }.reduce(0) { $0 + $1.betMoney }
         
+        // TODO: check user's limit
+        
         let betInfoModel = PlayBetInfoModel(playCateCode: play.cateCode,
                                             playCode: play.playCode,
                                             betMoney: betMoney,
                                             hadBet: false)
         readyBet.append(betInfoModel)
+        reloadBetInfo()
+    }
+    
+    func cancelReadyBet() {
+        readyBet.removeAll()
         reloadBetInfo()
     }
 }
