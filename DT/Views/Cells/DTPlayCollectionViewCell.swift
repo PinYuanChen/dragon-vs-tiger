@@ -140,17 +140,18 @@ private extension DTPlayCollectionViewCell {
             .disposed(by: disposeBag)
         
         _updateSelectedPlayModels
-            .filter { !$0.isEmpty }
             .withLatestFrom(_playOptionInfo.compactMap { $0 }) { ($0, $1) }
             .subscribe(onNext: { [weak self] (selectedPlayModels, playOptionInfo) in
                 guard let self = self else { return }
                 guard let model = selectedPlayModels.filter({ $0.playCode == playOptionInfo.playCode.rawValue }).first else {
-                    self.chipInfoView.moneyString = ""
+                    self.chipInfoView.isHidden = true
                     return
                 }
                 
-                self.chipInfoView.isHidden = false
+                self.chipInfoView.isHidden = model.betMoneyString.isEmpty
                 self.chipInfoView.moneyString = model.betMoneyString
+                self.hadBetLabel.isHidden = model.hadBetMoneyString.isEmpty
+                self.hadBetLabel.text = model.hadBetMoneyString
             })
             .disposed(by: disposeBag)
     }
