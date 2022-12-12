@@ -22,6 +22,8 @@ class DTPlayView: UIView {
         set { _isInteractionEnabled.accept(newValue) }
     }
     
+    let clearAllBet = PublishRelay<Void>()
+    
     // Output
     let selectedPlay = PublishRelay<SelectedPlayModel>()
     
@@ -147,6 +149,9 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
             .disposed(by: cell.reuseDisposeBag)
         _updateSelectedPlayModels
             .bind(to: cell.updateSelectedPlayModels)
+            .disposed(by: cell.reuseDisposeBag)
+        clearAllBet
+            .bind(to: cell.clearAllBetInfo)
             .disposed(by: cell.reuseDisposeBag)
         return cell
     }

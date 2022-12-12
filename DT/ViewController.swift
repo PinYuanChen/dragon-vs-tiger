@@ -117,9 +117,10 @@ private extension ViewController {
         
         animationView
             .finishAnimation
-            .withUnretained(self)
+            .withUnretained(viewModel)
             .subscribe(onNext: { owner, _ in
-                owner.viewModel.input.getCurrentTime()
+                owner.input.clearAllBetInfo(withAnimation: true)
+                owner.input.getCurrentTime()
             })
             .disposed(by: disposeBag)
         
@@ -212,6 +213,16 @@ private extension ViewController {
             .withUnretained(playView)
             .subscribe(onNext: { owner, models in
                 owner.updateSelectedPlayModels = models
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
+            .clearAllBet
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.playView.clearAllBet.accept(())
+                // TODO: open again
             })
             .disposed(by: disposeBag)
         
