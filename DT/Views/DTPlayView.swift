@@ -115,7 +115,6 @@ private extension DTPlayView {
                 owner.alpha = enabled ? 1 : 0.5
             })
             .disposed(by: disposeBag)
-        
     }
 }
 

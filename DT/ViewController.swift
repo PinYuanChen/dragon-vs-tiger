@@ -222,7 +222,7 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.playView.clearAllBet.accept(())
-                // TODO: open again
+                owner.animationView.isBettingEnabled = true
             })
             .disposed(by: disposeBag)
         
@@ -243,6 +243,7 @@ private extension ViewController {
         } else {
             invalidate()
             animationView.beginAnimation.accept(())
+            animationView.isBettingEnabled = false
             playView.isInteractionEnabled = false
             viewModel.input.cancelReadyBet()
             
