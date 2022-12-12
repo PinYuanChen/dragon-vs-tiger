@@ -19,7 +19,7 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    // TODO: update select info
+    let clearAllBetInfo = PublishRelay<Void>()
     
     var reuseDisposeBag = DisposeBag()
     
@@ -152,6 +152,16 @@ private extension DTPlayCollectionViewCell {
                 self.chipInfoView.moneyString = model.betMoneyString
                 self.hadBetLabel.isHidden = model.hadBetMoneyString.isEmpty
                 self.hadBetLabel.text = model.hadBetMoneyString
+            })
+            .disposed(by: disposeBag)
+        
+        clearAllBetInfo
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.chipInfoView.moneyString = ""
+                owner.hadBetLabel.text = ""
+                owner.chipInfoView.isHidden = true
+                owner.hadBetLabel.isHidden = true
             })
             .disposed(by: disposeBag)
     }

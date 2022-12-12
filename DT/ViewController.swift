@@ -117,9 +117,10 @@ private extension ViewController {
         
         animationView
             .finishAnimation
-            .withUnretained(self)
+            .withUnretained(viewModel)
             .subscribe(onNext: { owner, _ in
-                owner.viewModel.input.getCurrentTime()
+                owner.input.clearAllBetInfo(withAnimation: true)
+                owner.input.getCurrentTime()
             })
             .disposed(by: disposeBag)
         
@@ -190,6 +191,9 @@ private extension ViewController {
             .showCurrentTime
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
+                // tmp
+                owner.playView.isInteractionEnabled = true
+                
                 if owner.timer == nil {
                     owner.countDownNum = 0
                     owner.timer = Timer.scheduledTimer(
@@ -213,6 +217,16 @@ private extension ViewController {
             .disposed(by: disposeBag)
         
         viewModel
+            .output
+            .clearAllBet
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.playView.clearAllBet.accept(())
+                owner.animationView.isBettingEnabled = true
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel
             .input
             .getPlayOptions()
     }
@@ -229,6 +243,10 @@ private extension ViewController {
         } else {
             invalidate()
             animationView.beginAnimation.accept(())
+            animationView.isBettingEnabled = false
+            playView.isInteractionEnabled = false
+            viewModel.input.cancelReadyBet()
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.viewModel.input.getGameResult()
             }

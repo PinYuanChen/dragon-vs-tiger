@@ -8,18 +8,21 @@ class DTPlayView: UIView {
     
     // Input
     var playOptions: DTPlayCateModel? {
-        get {
-            _playOptions.value
-        }
-        set {
-            _playOptions.accept(newValue)
-        }
+        get { _playOptions.value }
+        set { _playOptions.accept(newValue) }
     }
     
     var updateSelectedPlayModels: [UpdateSelectedPlayModel] {
         get { _updateSelectedPlayModels.value }
         set { _updateSelectedPlayModels.accept(newValue) }
     }
+    
+    var isInteractionEnabled: Bool {
+        get { _isInteractionEnabled.value }
+        set { _isInteractionEnabled.accept(newValue) }
+    }
+    
+    let clearAllBet = PublishRelay<Void>()
     
     // Output
     let selectedPlay = PublishRelay<SelectedPlayModel>()
@@ -39,6 +42,7 @@ class DTPlayView: UIView {
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
+    private let _isInteractionEnabled = BehaviorRelay<Bool>(value: true)
     private let disposeBag = DisposeBag()
 }
 
@@ -103,6 +107,14 @@ private extension DTPlayView {
                                                 endPoint: .zero))
             })
             .disposed(by: disposeBag)
+        
+        _isInteractionEnabled
+            .withUnretained(self)
+            .subscribe(onNext: { owner, enabled in
+                owner.isUserInteractionEnabled = enabled
+                owner.alpha = enabled ? 1 : 0.5
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -136,6 +148,9 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
             .disposed(by: cell.reuseDisposeBag)
         _updateSelectedPlayModels
             .bind(to: cell.updateSelectedPlayModels)
+            .disposed(by: cell.reuseDisposeBag)
+        clearAllBet
+            .bind(to: cell.clearAllBetInfo)
             .disposed(by: cell.reuseDisposeBag)
         return cell
     }

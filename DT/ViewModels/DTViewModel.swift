@@ -15,6 +15,7 @@ protocol DTViewModelOutput {
     var showCurrentTime: Observable<Void> { get }
     var showWinPlay: Observable<String> { get }
     var updateSelectedPlayModels: Observable<[UpdateSelectedPlayModel]> { get }
+    var clearAllBet: Observable<Void> { get }
 }
 
 protocol DTViewModelInput {
@@ -27,6 +28,7 @@ protocol DTViewModelInput {
     func getSelectedPlay(_ play: SelectedPlayModel)
     func cancelReadyBet()
     func confirmReadyBet()
+    func clearAllBetInfo(withAnimation: Bool)
 }
 
 class DTViewModel: DTViewModelPrototype {
@@ -38,13 +40,15 @@ class DTViewModel: DTViewModelPrototype {
     private let _lastGameResult = PublishRelay<GameResultModel>()
     private let _gameResult = BehaviorRelay<GameResultModel?>(value: nil)
     private let _showCurrentTime = PublishRelay<Void>()
-    private var winner = ""
+    private var winPlays = ""
     private let _showWinPlay = PublishRelay<String>()
     private let _selectedChipIndex = BehaviorRelay<Int>(value: 0)
     private let chipItems = ChipType.allCases
     private var hadBet = [PlayBetInfoModel]()
     private var readyBet = [PlayBetInfoModel]()
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]?>(value: nil)
+    private let _clearAllBet = PublishRelay<Void>()
+    private let _clearAllBetWithoutAnimation = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -74,6 +78,10 @@ extension DTViewModel: DTViewModelOutput {
     var updateSelectedPlayModels: Observable<[UpdateSelectedPlayModel]> {
         _updateSelectedPlayModels.compactMap { $0 }.asObservable()
     }
+    
+    var clearAllBet: Observable<Void> {
+        _clearAllBet.asObservable()
+    }
 }
 
 // MARK: Input
@@ -99,11 +107,11 @@ extension DTViewModel: DTViewModelInput {
         let tiger = getSuitResult()
         
         if dragon.number > tiger.number {
-            winner = "dragon"
+            winPlays = "dragon"
         } else if dragon.number < tiger.number {
-            winner = "tiger"
+            winPlays = "tiger"
         } else {
-            winner = "tie"
+            winPlays = "tie"
         }
         
         _gameResult.accept(.init(dragon: dragon,
@@ -115,7 +123,7 @@ extension DTViewModel: DTViewModelInput {
     }
     
     func getWinPlay() {
-        _showWinPlay.accept(winner)
+        _showWinPlay.accept(winPlays)
     }
     
     func getSelectedChipIndex(_ index: Int) {
@@ -153,6 +161,19 @@ extension DTViewModel: DTViewModelInput {
         hadBet += addBetInfo
         readyBet.removeAll()
         reloadBetInfo()
+    }
+    
+    func clearAllBetInfo(withAnimation: Bool) {
+        hadBet.removeAll()
+        readyBet.removeAll()
+        winPlays.removeAll()
+        
+        if withAnimation {
+            _clearAllBet.accept(())
+        } else {
+            _clearAllBetWithoutAnimation.accept(())
+        }
+        _updateSelectedPlayModels.accept([])
     }
 }
 
