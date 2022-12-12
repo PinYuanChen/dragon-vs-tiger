@@ -17,6 +17,11 @@ class DTPlayView: UIView {
         set { _updateSelectedPlayModels.accept(newValue) }
     }
     
+    var isInteractionEnabled: Bool {
+        get { _isInteractionEnabled.value }
+        set { _isInteractionEnabled.accept(newValue) }
+    }
+    
     // Output
     let selectedPlay = PublishRelay<SelectedPlayModel>()
     
@@ -35,6 +40,7 @@ class DTPlayView: UIView {
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
+    private let _isInteractionEnabled = BehaviorRelay<Bool>(value: true)
     private let disposeBag = DisposeBag()
 }
 
@@ -97,6 +103,14 @@ private extension DTPlayView {
                 owner.selectedPlay.accept(.init(cateCode: cateCode,
                                                 playCode: playCode.rawValue,
                                                 endPoint: .zero))
+            })
+            .disposed(by: disposeBag)
+        
+        _isInteractionEnabled
+            .withUnretained(self)
+            .subscribe(onNext: { owner, enabled in
+                owner.isUserInteractionEnabled = enabled
+                owner.alpha = enabled ? 1 : 0.5
             })
             .disposed(by: disposeBag)
         

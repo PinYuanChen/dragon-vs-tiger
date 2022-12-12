@@ -190,6 +190,9 @@ private extension ViewController {
             .showCurrentTime
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
+                // tmp
+                owner.playView.isInteractionEnabled = true
+                
                 if owner.timer == nil {
                     owner.countDownNum = 0
                     owner.timer = Timer.scheduledTimer(
@@ -230,6 +233,7 @@ private extension ViewController {
             invalidate()
             animationView.beginAnimation.accept(())
             viewModel.input.cancelReadyBet()
+            playView.isInteractionEnabled = false
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.viewModel.input.getGameResult()
