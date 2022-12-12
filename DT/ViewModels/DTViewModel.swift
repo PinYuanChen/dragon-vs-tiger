@@ -15,6 +15,7 @@ protocol DTViewModelOutput {
     var showCurrentTime: Observable<Void> { get }
     var showWinPlay: Observable<String> { get }
     var updateSelectedPlayModels: Observable<[UpdateSelectedPlayModel]> { get }
+    var clearAllBet: Observable<Void> { get }
 }
 
 protocol DTViewModelInput {
@@ -27,6 +28,7 @@ protocol DTViewModelInput {
     func getSelectedPlay(_ play: SelectedPlayModel)
     func cancelReadyBet()
     func confirmReadyBet()
+    func clearAllBetInfo(withAnimation: Bool)
 }
 
 class DTViewModel: DTViewModelPrototype {
@@ -45,6 +47,8 @@ class DTViewModel: DTViewModelPrototype {
     private var hadBet = [PlayBetInfoModel]()
     private var readyBet = [PlayBetInfoModel]()
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]?>(value: nil)
+    private let _clearAllBet = PublishRelay<Void>()
+    private let _clearAllBetWithoutAnimation = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -73,6 +77,10 @@ extension DTViewModel: DTViewModelOutput {
     
     var updateSelectedPlayModels: Observable<[UpdateSelectedPlayModel]> {
         _updateSelectedPlayModels.compactMap { $0 }.asObservable()
+    }
+    
+    var clearAllBet: Observable<Void> {
+        _clearAllBet.asObservable()
     }
 }
 
@@ -153,6 +161,17 @@ extension DTViewModel: DTViewModelInput {
         hadBet += addBetInfo
         readyBet.removeAll()
         reloadBetInfo()
+    }
+    
+    func clearAllBetInfo(withAnimation: Bool) {
+        hadBet.removeAll()
+        readyBet.removeAll()
+        if withAnimation {
+            _clearAllBet.accept(())
+        } else {
+            _clearAllBetWithoutAnimation.accept(())
+        }
+        _updateSelectedPlayModels.accept([])
     }
 }
 
