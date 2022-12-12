@@ -229,6 +229,8 @@ private extension ViewController {
         } else {
             invalidate()
             animationView.beginAnimation.accept(())
+            viewModel.input.cancelReadyBet()
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.viewModel.input.getGameResult()
             }

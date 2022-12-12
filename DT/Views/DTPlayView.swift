@@ -8,12 +8,8 @@ class DTPlayView: UIView {
     
     // Input
     var playOptions: DTPlayCateModel? {
-        get {
-            _playOptions.value
-        }
-        set {
-            _playOptions.accept(newValue)
-        }
+        get { _playOptions.value }
+        set { _playOptions.accept(newValue) }
     }
     
     var updateSelectedPlayModels: [UpdateSelectedPlayModel] {
@@ -103,6 +99,7 @@ private extension DTPlayView {
                                                 endPoint: .zero))
             })
             .disposed(by: disposeBag)
+        
     }
 }
 
