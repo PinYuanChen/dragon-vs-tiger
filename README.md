@@ -1,7 +1,5 @@
 # DT
-Dragon vs. Tiger 
-
-DT is a simpilified project based on my working task.
+Dragon vs. Tiger is a simpilified project based on my working task.
 
 There are two sides in this game: dragon and tiger.
 
