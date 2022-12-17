@@ -9,7 +9,7 @@ class DTBottomView: UIView {
     let selectedIndex = BehaviorRelay<Int>(value: 0)
     let didTappedCancelButton = PublishRelay<Void>()
     let didTappedConfirmButton = PublishRelay<Void>()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -30,7 +30,7 @@ class DTBottomView: UIView {
 
 // MARK: - Setup UI
 private extension DTBottomView {
-
+    
     func setupUI() {
         setupLeftButton()
         setupCollectionView()
@@ -49,7 +49,7 @@ private extension DTBottomView {
             $0.leading.equalToSuperview().inset(20.zoom())
         }
     }
-
+    
     func setupCollectionView() {
         let flowLayout: UICollectionViewFlowLayout = .init()
         flowLayout.scrollDirection = .horizontal
@@ -161,8 +161,11 @@ extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         .init(width: 80.zoom(), height: 80.zoom())
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChipCell", for: indexPath) as? ChipCollectionViewCell else {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "ChipCell", for: indexPath
+        ) as? ChipCollectionViewCell else {
             return .init()
         }
         let chipType = ChipType.allCases

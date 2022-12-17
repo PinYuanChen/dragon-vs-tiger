@@ -93,11 +93,7 @@ private extension DTPlayView {
             .itemSelected
             .withUnretained(self)
             .subscribe(onNext: { owner, index in
-                guard let cell = owner.collectionView.dequeueReusableCell(
-                    withReuseIdentifier: owner.identifier,
-                    for: index
-                ) as? DTPlayCollectionViewCell,
-                      let cateCode = owner.playOptions?.cateCode,
+                guard let cateCode = owner.playOptions?.cateCode,
                       let playCode = owner.playOptions?.playType[index.item].playCode else {
                     return
                 }
@@ -134,7 +130,8 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
         return .init(width: cellWidthInt, height: cellWidthInt)
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: identifier,
                                  for: indexPath) as? DTPlayCollectionViewCell,

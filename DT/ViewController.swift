@@ -261,4 +261,3 @@ private extension ViewController {
         countDownView.isHidden = true
     }
 }
-

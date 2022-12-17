@@ -1,5 +1,4 @@
 
-
 import UIKit
 import SnapKit
 import RxSwift
@@ -50,7 +49,6 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
     private let hadBetLabel = UILabel()
     private let disposeBag = DisposeBag()
 }
-
 
 // MARK: - Setup UI
 private extension DTPlayCollectionViewCell {
@@ -143,7 +141,9 @@ private extension DTPlayCollectionViewCell {
             .withLatestFrom(_playOptionInfo.compactMap { $0 }) { ($0, $1) }
             .subscribe(onNext: { [weak self] (selectedPlayModels, playOptionInfo) in
                 guard let self = self else { return }
-                guard let model = selectedPlayModels.filter({ $0.playCode == playOptionInfo.playCode.rawValue }).first else {
+                guard let model = selectedPlayModels.filter({
+                    $0.playCode == playOptionInfo.playCode.rawValue
+                }).first else {
                     self.chipInfoView.isHidden = true
                     return
                 }

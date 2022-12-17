@@ -164,9 +164,8 @@ extension DTCountDownView: CAAnimationDelegate {
     }
 }
 
-
 private extension Int {
-    var degreesToRadians : CGFloat {
+    var degreesToRadians: CGFloat {
         return CGFloat(self) * .pi / 180
     }
 }

@@ -19,7 +19,6 @@ class DTAnimationView: UIView {
         set { _isBettingEnabled.accept(newValue) }
     }
     
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -155,7 +154,6 @@ private extension DTAnimationView {
                 }
             })
             .disposed(by: disposeBag)
-        
         
         _isBettingEnabled
             .withUnretained(self)

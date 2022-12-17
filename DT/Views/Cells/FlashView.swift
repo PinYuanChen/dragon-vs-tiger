@@ -30,7 +30,5 @@ private extension FlashView {
 
 // MARK: - Bind
 private extension FlashView {
-    func bind() {
-        
-    }
+    func bind() { }
 }
