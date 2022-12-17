@@ -4,20 +4,27 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class DTAnimationView: UIView {
+protocol DTAnimationInputPrototype {
+    func showResult(_: GameResultModel, withAnimation: Bool)
+    func beginAnimation()
+    func showWinner(_: String)
+    func enableBetting(_: Bool)
+}
+
+protocol DTAnimationOutputPrototype {
+    var finishFlipCard: Observable<Void> { get }
+    var finishAnimation: Observable<Void> { get }
+}
+
+protocol DTAnimationPrototype {
+    var input: DTAnimationInputPrototype { get }
+    var output: DTAnimationOutputPrototype { get }
+}
+
+class DTAnimationView: UIView, DTAnimationPrototype {
     
-    // Input
-    let showResultWithoutAnimation = PublishRelay<GameResultModel>()
-    let showResultWithAnimation = PublishRelay<GameResultModel>()
-    let beginAnimation = PublishRelay<Void>()
-    let finishFlipCard = PublishRelay<Void>()
-    let showWinner = PublishRelay<String>()
-    let finishAnimation = PublishRelay<Void>()
-    
-    var isBettingEnabled: Bool {
-        get { _isBettingEnabled.value }
-        set { _isBettingEnabled.accept(newValue) }
-    }
+    var input: DTAnimationInputPrototype { self }
+    var output: DTAnimationOutputPrototype { self }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,7 +40,8 @@ class DTAnimationView: UIView {
     private let tigerImageView = UIImageView()
     private let pokerResultView = DTPokerResultView(frame: .zero)
     private let statusLabel = UILabel()
-    private let _isBettingEnabled = BehaviorRelay<Bool>(value: true)
+    private let _finishFlipCard = PublishRelay<Void>()
+    private let _finishAnimation = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -101,72 +109,72 @@ private extension DTAnimationView {
 // MARK: - Bind
 private extension DTAnimationView {
     func bind() {
-        showResultWithoutAnimation
-            .bind(to: pokerResultView.showResultWithoutAnimation)
-            .disposed(by: disposeBag)
-        
-        beginAnimation
-            .bind(to: pokerResultView.beginAnimation)
-            .disposed(by: disposeBag)
-        
-        showResultWithAnimation
-            .bind(to: pokerResultView.showResultWithAnimation)
-            .disposed(by: disposeBag)
-        
         pokerResultView
+            .output
             .finishFlipCard
-            .bind(to: finishFlipCard)
-            .disposed(by: disposeBag)
-        
-        showWinner
-            .withUnretained(self)
-            .subscribe(onNext: { owner, winner in
-                let imageView = UIImageView()
-                if winner == "dragon" {
-                    imageView.image = .init(named: "dragon")
-                    owner.dragonImageView.addSubview(imageView)
-                } else if winner == "tiger" {
-                    imageView.image = .init(named: "tiger")
-                    owner.tigerImageView.addSubview(imageView)
-                } else {
-                    owner.finishAnimation.accept(())
-                    return
-                }
-                
-                imageView.snp.makeConstraints {
-                    $0.edges.equalToSuperview()
-                }
-                
-                imageView.transform = .identity
-                
-                UIView
-                    .animate(
-                        withDuration: 1,
-                        delay: 0,
-                        options: [.curveEaseInOut, .repeat]) {
-                            imageView.transform = CGAffineTransform(scaleX: 2, y: 2)
-                            imageView.alpha = 0
-                        }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                    imageView.removeFromSuperview()
-                    owner.finishAnimation.accept(())
-                }
-            })
-            .disposed(by: disposeBag)
-        
-        _isBettingEnabled
-            .withUnretained(self)
-            .subscribe(onNext: { owner, enabled in
-                owner.statusLabel.backgroundColor = enabled ? .systemBlue : .systemRed
-                owner.statusLabel.text = enabled ? "開盤" : "封盤"
-                owner.statusLabel.fadeInAndOut(duration: 0.5)
-            })
+            .bind(to: _finishFlipCard)
             .disposed(by: disposeBag)
     }
 }
 
-// MARK: - Private functions
-private extension DTAnimationView {
+// MARK: - Input
+extension DTAnimationView: DTAnimationInputPrototype {
+    func showResult(_ result: GameResultModel, withAnimation: Bool) {
+        pokerResultView.input.showResult(result, withAnimation: withAnimation)
+    }
     
+    func beginAnimation() {
+        pokerResultView.input.beginAnimation()
+    }
+    
+    func showWinner(_ winner: String) {
+        let imageView = UIImageView()
+        if winner == "dragon" {
+            imageView.image = .init(named: "dragon")
+            dragonImageView.addSubview(imageView)
+        } else if winner == "tiger" {
+            imageView.image = .init(named: "tiger")
+            tigerImageView.addSubview(imageView)
+        } else {
+            _finishAnimation.accept(())
+            return
+        }
+        
+        imageView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        imageView.transform = .identity
+        
+        UIView
+            .animate(
+                withDuration: 1,
+                delay: 0,
+                options: [.curveEaseInOut, .repeat]) {
+                    imageView.transform = CGAffineTransform(scaleX: 2, y: 2)
+                    imageView.alpha = 0
+                }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            imageView.removeFromSuperview()
+            self._finishAnimation.accept(())
+        }
+    }
+    
+    func enableBetting(_ enabled: Bool) {
+        statusLabel.backgroundColor = enabled ? .systemBlue : .systemRed
+        statusLabel.text = enabled ? "開盤" : "封盤"
+        statusLabel.fadeInAndOut(duration: 0.5)
+    }
+}
+
+// MARK: - Output
+extension DTAnimationView: DTAnimationOutputPrototype {
+    var finishFlipCard: Observable<Void> {
+        _finishFlipCard.asObservable()
+    }
+    
+    var finishAnimation: Observable<Void> {
+        _finishAnimation.asObservable()
+    }
 }

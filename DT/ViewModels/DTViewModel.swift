@@ -99,7 +99,6 @@ extension DTViewModel: DTViewModelInput {
         let tiger = SuitModel(suit: .diamond, number: 9)
         let result = GameResultModel(dragon: dragon, tiger: tiger)
         _lastGameResult.accept(result)
-        _gameResult.accept(result)
     }
     
     func getGameResult() {
@@ -132,7 +131,8 @@ extension DTViewModel: DTViewModelInput {
     
     func getSelectedPlay(_ play: SelectedPlayModel) {
         let betMoney = chipItems[_selectedChipIndex.value].number
-        let playReadyBetMoney = readyBet.filter { $0.playCateCode == play.cateCode &&
+        let playReadyBetMoney = readyBet.filter {
+            $0.playCateCode == play.cateCode &&
             $0.playCode == play.playCode
         }.reduce(0) { $0 + $1.betMoney }
         

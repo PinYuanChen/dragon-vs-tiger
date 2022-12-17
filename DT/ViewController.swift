@@ -171,19 +171,28 @@ private extension ViewController {
         viewModel
             .output
             .lastGameResult
-            .bind(to: animationView.showResultWithoutAnimation)
+            .withUnretained(animationView)
+            .subscribe(onNext: { owner, result in
+                owner.input.showResult(result, withAnimation: false)
+            })
             .disposed(by: disposeBag)
         
         viewModel
             .output
             .gameResult
-            .bind(to: animationView.showResultWithAnimation)
+            .withUnretained(animationView)
+            .subscribe(onNext: { owner, result in
+                owner.input.showResult(result, withAnimation: true)
+            })
             .disposed(by: disposeBag)
         
         viewModel
             .output
             .showWinPlay
-            .bind(to: animationView.showWinner)
+            .withUnretained(animationView)
+            .subscribe(onNext: { owner, winner in
+                owner.input.showWinner(winner)
+            })
             .disposed(by: disposeBag)
         
         viewModel
@@ -222,13 +231,17 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.playView.clearAllBet.accept(())
-                owner.animationView.isBettingEnabled = true
+                owner.animationView.input.enableBetting(true)
             })
             .disposed(by: disposeBag)
         
         viewModel
             .input
             .getPlayOptions()
+        
+        viewModel
+            .input
+            .getLastGameResult()
     }
 }
 
@@ -242,8 +255,8 @@ private extension ViewController {
             countDownNum += 1
         } else {
             invalidate()
-            animationView.beginAnimation.accept(())
-            animationView.isBettingEnabled = false
+            animationView.input.beginAnimation()
+            animationView.input.enableBetting(false)
             playView.isInteractionEnabled = false
             viewModel.input.cancelReadyBet()
             
