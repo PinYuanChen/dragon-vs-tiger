@@ -102,18 +102,28 @@ private extension DTAnimationView {
 private extension DTAnimationView {
     func bind() {
         showResultWithoutAnimation
-            .bind(to: pokerResultView.showResultWithoutAnimation)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, result in
+                owner.pokerResultView.input.showResult(result, withAnimation: false)
+            })
             .disposed(by: disposeBag)
         
         beginAnimation
-            .bind(to: pokerResultView.beginAnimation)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.pokerResultView.input.beginAnimation()
+            })
             .disposed(by: disposeBag)
         
         showResultWithAnimation
-            .bind(to: pokerResultView.showResultWithAnimation)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, result in
+                owner.pokerResultView.input.showResult(result, withAnimation: true)
+            })
             .disposed(by: disposeBag)
         
         pokerResultView
+            .output
             .finishFlipCard
             .bind(to: finishFlipCard)
             .disposed(by: disposeBag)

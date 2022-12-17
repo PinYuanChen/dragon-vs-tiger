@@ -229,6 +229,10 @@ private extension ViewController {
         viewModel
             .input
             .getPlayOptions()
+        
+        viewModel
+            .input
+            .getLastGameResult()
     }
 }
 

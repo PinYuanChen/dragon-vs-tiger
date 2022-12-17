@@ -99,7 +99,6 @@ extension DTViewModel: DTViewModelInput {
         let tiger = SuitModel(suit: .diamond, number: 9)
         let result = GameResultModel(dragon: dragon, tiger: tiger)
         _lastGameResult.accept(result)
-        _gameResult.accept(result)
     }
     
     func getGameResult() {

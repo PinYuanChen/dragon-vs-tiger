@@ -4,12 +4,24 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class DTPokerResultView: UIView {
+protocol DTPokerResultInputPrototype {
+    func showResult(_: GameResultModel, withAnimation: Bool)
+    func beginAnimation()
+}
+
+protocol DTPokerResultOutputPrototype {
+    var finishFlipCard: Observable<Void> { get }
+}
+
+protocol DTPokerResultPrototype {
+    var input: DTPokerResultInputPrototype { get }
+    var output: DTPokerResultOutputPrototype { get }
+}
+
+class DTPokerResultView: UIView, DTPokerResultPrototype {
     
-    let showResultWithoutAnimation = PublishRelay<GameResultModel>()
-    let showResultWithAnimation = PublishRelay<GameResultModel>()
-    let beginAnimation = PublishRelay<Void>()
-    let finishFlipCard = PublishRelay<Void>()
+    var input: DTPokerResultInputPrototype { self }
+    var output: DTPokerResultOutputPrototype { self }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,6 +35,7 @@ class DTPokerResultView: UIView {
 
     private let dragonPoker = DTPokerView(frame: .zero)
     private let tigerPoker = DTPokerView(frame: .zero)
+    private let _finishFlipCard = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -55,42 +68,42 @@ private extension DTPokerResultView {
 // MARK: - Bind
 private extension DTPokerResultView {
     func bind() {
-        showResultWithoutAnimation
-            .withUnretained(self)
-            .subscribe(onNext: { owner, result in
-                owner.dragonPoker.input.setSuit(result.dragon)
-                owner.tigerPoker.input.setSuit(result.tiger)
-            })
-            .disposed(by: disposeBag)
-        
-        showResultWithAnimation
-            .withUnretained(self)
-            .subscribe(onNext: { owner, result in
-                owner.dragonPoker.input.setSuit(result.dragon)
-                owner.tigerPoker.input.setSuit(result.tiger)
-                owner.dragonPoker.input.flipCard()
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    owner.tigerPoker.input.flipCard()
-                }
-            })
-            .disposed(by: disposeBag)
-        
-        beginAnimation
-            .withUnretained(self)
-            .subscribe(onNext: { owner, _ in
-                owner.resetCardsLayout()
-            })
-            .disposed(by: disposeBag)
-        
         tigerPoker
             .output
             .finishFlipCard
-            .bind(to: finishFlipCard)
+            .bind(to: _finishFlipCard)
             .disposed(by: disposeBag)
     }
 }
 
+// MARK: - Input
+extension DTPokerResultView: DTPokerResultInputPrototype {
+    func showResult(_ result: GameResultModel, withAnimation: Bool) {
+        dragonPoker.input.setSuit(result.dragon)
+        tigerPoker.input.setSuit(result.tiger)
+        
+        if withAnimation {
+            dragonPoker.input.flipCard()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.tigerPoker.input.flipCard()
+            }
+        }
+    }
+    
+    func beginAnimation() {
+        resetCardsLayout()
+    }
+
+}
+
+// MARK: - Output
+extension DTPokerResultView: DTPokerResultOutputPrototype {
+    var finishFlipCard: Observable<Void> {
+        _finishFlipCard.asObservable()
+    }
+}
+
+// MARK: - Private functions
 private extension DTPokerResultView {
     func resetCardsLayout() {
         dragonPoker.snp.remakeConstraints {
