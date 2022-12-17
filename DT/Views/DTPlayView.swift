@@ -138,16 +138,21 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
               let playType = _playOptions.value?.playType else {
             return .init()
         }
-        cell.playOptionInfo = playType[indexPath.item]
-        cell
-            .didSelectedPlay
-            .bind(to: selectedPlay)
-            .disposed(by: cell.reuseDisposeBag)
+        
+        cell.input.setPlayOptionInfo(playType[indexPath.item])
+        
         _updateSelectedPlayModels
-            .bind(to: cell.updateSelectedPlayModels)
+            .withUnretained(cell)
+            .subscribe(onNext: { owner, models in
+                cell.input.updateSelectedPlayModels(models)
+            })
             .disposed(by: cell.reuseDisposeBag)
+        
         clearAllBet
-            .bind(to: cell.clearAllBetInfo)
+            .withUnretained(cell)
+            .subscribe(onNext: { owner, _ in
+                owner.clearAllBetInfo()
+            })
             .disposed(by: cell.reuseDisposeBag)
         return cell
     }
