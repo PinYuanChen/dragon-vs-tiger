@@ -1,0 +1,43 @@
+whitelist_rules:
+  - colon
+  - yoda_condition
+  - operator_usage_whitespace
+  - operator_whitespace
+  - redundant_nil_coalescing
+  - switch_case_alignment
+  - trailing_newline
+  - trailing_semicolon
+  - unneeded_break_in_switch
+  - vertical_parameter_alignment
+  - vertical_whitespace
+  - legacy_constant
+  - legacy_constructor
+  - legacy_nsgeometry_functions
+  - literal_expression_end_indentation
+  - mark
+  - opening_brace
+  - protocol_property_accessors_order
+  - return_arrow_whitespace
+  - statement_position
+  - no_space_in_method_call
+  - type_body_length
+  - file_length
+  - weak_delegate
+  - force_cast
+  - line_length
+
+excluded: # 忽略
+  - Carthage
+  - Pods
+
+force_cast: warning
+
+line_length: 120
+
+type_body_length:
+  - 200 # warning
+  - 300 # error
+
+file_length:
+  warning: 500
+  error: 800

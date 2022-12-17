@@ -277,6 +277,7 @@
 			buildConfigurationList = 9BE5F96A292E63D500067053 /* Build configuration list for PBXNativeTarget "DT" */;
 			buildPhases = (
 				DD33A5DD35AFCE29AA3EC892 /* [CP] Check Pods Manifest.lock */,
+				9BB57DBE294D97380033BE22 /* ShellScript */,
 				9BE5F93C292E63D500067053 /* Sources */,
 				9BE5F93D292E63D500067053 /* Frameworks */,
 				9BE5F93E292E63D500067053 /* Resources */,
@@ -457,6 +458,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DT-DTUITests/Pods-DT-DTUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		9BB57DBE294D97380033BE22 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		DD33A5DD35AFCE29AA3EC892 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

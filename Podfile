@@ -10,6 +10,7 @@ target 'DT' do
   pod 'SnapKit', '4.2.0'
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
+  pod 'SwiftLint'
 
   target 'DTTests' do
     inherit! :search_paths
