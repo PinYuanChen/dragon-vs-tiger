@@ -4,28 +4,26 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class DTPlayView: UIView {
+protocol DTPlayInputPrototype {
+    func setPlayOptions(_: DTPlayCateModel)
+    func updateSelectedPlayModels(_: [UpdateSelectedPlayModel])
+    func setInteractionEnabled(_: Bool)
+    func clearAllBet()
+}
+
+protocol DTPlayOutputPrototype {
+    var selectedPlay: Observable<SelectedPlayModel> { get }
+}
+
+protocol DTPlayPrototype {
+    var input: DTPlayInputPrototype { get }
+    var output: DTPlayOutputPrototype { get }
+}
+
+class DTPlayView: UIView, DTPlayPrototype {
     
-    // Input
-    var playOptions: DTPlayCateModel? {
-        get { _playOptions.value }
-        set { _playOptions.accept(newValue) }
-    }
-    
-    var updateSelectedPlayModels: [UpdateSelectedPlayModel] {
-        get { _updateSelectedPlayModels.value }
-        set { _updateSelectedPlayModels.accept(newValue) }
-    }
-    
-    var isInteractionEnabled: Bool {
-        get { _isInteractionEnabled.value }
-        set { _isInteractionEnabled.accept(newValue) }
-    }
-    
-    let clearAllBet = PublishRelay<Void>()
-    
-    // Output
-    let selectedPlay = PublishRelay<SelectedPlayModel>()
+    var input: DTPlayInputPrototype { self }
+    var output: DTPlayOutputPrototype { self }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,6 +37,8 @@ class DTPlayView: UIView {
     
     private let _playOptions = BehaviorRelay<DTPlayCateModel?>(value: nil)
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]>(value: [])
+    private let _selectedPlay = PublishRelay<SelectedPlayModel>()
+    private let _clearAllBet = PublishRelay<Void>()
     private let identifier = "Cell"
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
@@ -93,12 +93,13 @@ private extension DTPlayView {
             .itemSelected
             .withUnretained(self)
             .subscribe(onNext: { owner, index in
-                guard let cateCode = owner.playOptions?.cateCode,
-                      let playCode = owner.playOptions?.playType[index.item].playCode else {
+                guard owner.isUserInteractionEnabled,
+                      let cateCode = owner._playOptions.value?.cateCode,
+                      let playCode = owner._playOptions.value?.playType[index.item].playCode else {
                     return
                 }
                 
-                owner.selectedPlay.accept(.init(cateCode: cateCode,
+                owner._selectedPlay.accept(.init(cateCode: cateCode,
                                                 playCode: playCode.rawValue,
                                                 endPoint: .zero))
             })
@@ -138,18 +139,52 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
               let playType = _playOptions.value?.playType else {
             return .init()
         }
-        cell.playOptionInfo = playType[indexPath.item]
-        cell
-            .didSelectedPlay
-            .bind(to: selectedPlay)
-            .disposed(by: cell.reuseDisposeBag)
+        
+        cell.input.setPlayOptionInfo(playType[indexPath.item])
+        
         _updateSelectedPlayModels
-            .bind(to: cell.updateSelectedPlayModels)
+            .withUnretained(cell)
+            .subscribe(onNext: { owner, models in
+                cell.input.updateSelectedPlayModels(models)
+            })
             .disposed(by: cell.reuseDisposeBag)
-        clearAllBet
-            .bind(to: cell.clearAllBetInfo)
+        
+        _clearAllBet
+            .withUnretained(cell)
+            .subscribe(onNext: { owner, _ in
+                owner.clearAllBetInfo()
+            })
+            .disposed(by: cell.reuseDisposeBag)
+        
+        _isInteractionEnabled
+            .bind(to: cell.rx.isUserInteractionEnabled)
             .disposed(by: cell.reuseDisposeBag)
         return cell
     }
+}
+
+// MARK: - Input
+extension DTPlayView: DTPlayInputPrototype {
+    func setPlayOptions(_ options: DTPlayCateModel) {
+        _playOptions.accept(options)
+    }
     
+    func updateSelectedPlayModels(_ selectedPlays: [UpdateSelectedPlayModel]) {
+        _updateSelectedPlayModels.accept(selectedPlays)
+    }
+    
+    func setInteractionEnabled(_ enabled: Bool) {
+        _isInteractionEnabled.accept(enabled)
+    }
+    
+    func clearAllBet() {
+        _clearAllBet.accept(())
+    }
+}
+
+// MARK: - Output
+extension DTPlayView: DTPlayOutputPrototype {
+    var selectedPlay: RxSwift.Observable<SelectedPlayModel> {
+        _selectedPlay.asObservable()
+    }
 }

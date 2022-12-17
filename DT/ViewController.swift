@@ -164,7 +164,7 @@ private extension ViewController {
             .playOptions
             .withUnretained(self)
             .subscribe(onNext: { owner, options in
-                owner.playView.playOptions = options
+                owner.playView.input.setPlayOptions(options)
             })
             .disposed(by: disposeBag)
         
@@ -201,7 +201,7 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 // tmp
-                owner.playView.isInteractionEnabled = true
+                owner.playView.input.setInteractionEnabled(true)
                 
                 if owner.timer == nil {
                     owner.countDownNum = 0
@@ -221,7 +221,7 @@ private extension ViewController {
             .updateSelectedPlayModels
             .withUnretained(playView)
             .subscribe(onNext: { owner, models in
-                owner.updateSelectedPlayModels = models
+                owner.input.updateSelectedPlayModels(models)
             })
             .disposed(by: disposeBag)
         
@@ -230,7 +230,7 @@ private extension ViewController {
             .clearAllBet
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.playView.clearAllBet.accept(())
+                owner.playView.input.clearAllBet()
                 owner.animationView.input.enableBetting(true)
             })
             .disposed(by: disposeBag)
@@ -257,7 +257,7 @@ private extension ViewController {
             invalidate()
             animationView.input.beginAnimation()
             animationView.input.enableBetting(false)
-            playView.isInteractionEnabled = false
+            playView.input.setInteractionEnabled(false)
             viewModel.input.cancelReadyBet()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {

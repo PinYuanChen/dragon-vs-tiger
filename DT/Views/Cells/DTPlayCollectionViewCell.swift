@@ -4,31 +4,28 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class DTPlayCollectionViewCell: UICollectionViewCell {
+protocol DTPlayCollectionCellInputPrototype {
+    func setPlayOptionInfo(_: DTPlayModel)
+    func updateSelectedPlayModels(_: [UpdateSelectedPlayModel])
+    func clearAllBetInfo()
+}
+
+protocol DTPlayCollectionCellOutputPrototype { }
+
+protocol DTPlayCollectionCellPrototype {
+    var input: DTPlayCollectionCellInputPrototype { get }
+    var output: DTPlayCollectionCellOutputPrototype { get }
+}
+
+class DTPlayCollectionViewCell: UICollectionViewCell, DTPlayCollectionCellPrototype {
     
-    // Input
-    var playOptionInfo: DTPlayModel? {
-        get { _playOptionInfo.value }
-        set { _playOptionInfo.accept(newValue) }
-    }
-    
-    var updateSelectedPlayModels: Binder<[UpdateSelectedPlayModel]> {
-        .init(self) { target, models in
-            target._updateSelectedPlayModels.accept(models)
-        }
-    }
-    
-    let clearAllBetInfo = PublishRelay<Void>()
-    
+    var input: DTPlayCollectionCellInputPrototype { self }
+    var output: DTPlayCollectionCellOutputPrototype { self }
     var reuseDisposeBag = DisposeBag()
-    
-    // Output
-    let didSelectedPlay = PublishRelay<SelectedPlayModel>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        bind()
     }
     
     required init?(coder: NSCoder) {
@@ -37,10 +34,11 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        _playOptionInfo = nil
         reuseDisposeBag = .init()
     }
     
-    private let _playOptionInfo = BehaviorRelay<DTPlayModel?>(value: nil)
+    private var _playOptionInfo: DTPlayModel?
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]>(value: [])
     private let flashView = FlashView(frame: .zero)
     private let titleLabel = UILabel()
@@ -125,44 +123,36 @@ private extension DTPlayCollectionViewCell {
     }
 }
 
-// MARK: - Bind
-private extension DTPlayCollectionViewCell {
-    func bind() {
-        _playOptionInfo
-            .compactMap { $0 }
-            .withUnretained(self)
-            .subscribe(onNext: { owner, play in
-                owner.titleLabel.text = play.playCode.title
-                owner.oddsLabel.text = play.odds
-            })
-            .disposed(by: disposeBag)
+// MARK: - Input
+extension DTPlayCollectionViewCell: DTPlayCollectionCellInputPrototype {
+    func setPlayOptionInfo(_ play: DTPlayModel) {
+        _playOptionInfo = play
+        titleLabel.text = play.playCode.title
+        oddsLabel.text = play.odds
+    }
+    
+    func updateSelectedPlayModels(_ selectedPlayModels: [UpdateSelectedPlayModel]) {
+        guard let play = _playOptionInfo,
+              let model = selectedPlayModels.filter({
+            $0.playCode == play.playCode.rawValue
+        }).first else {
+            chipInfoView.isHidden = true
+            return
+        }
         
-        _updateSelectedPlayModels
-            .withLatestFrom(_playOptionInfo.compactMap { $0 }) { ($0, $1) }
-            .subscribe(onNext: { [weak self] (selectedPlayModels, playOptionInfo) in
-                guard let self = self else { return }
-                guard let model = selectedPlayModels.filter({
-                    $0.playCode == playOptionInfo.playCode.rawValue
-                }).first else {
-                    self.chipInfoView.isHidden = true
-                    return
-                }
-                
-                self.chipInfoView.isHidden = model.betMoneyString.isEmpty
-                self.chipInfoView.moneyString = model.betMoneyString
-                self.hadBetLabel.isHidden = model.hadBetMoneyString.isEmpty
-                self.hadBetLabel.text = model.hadBetMoneyString
-            })
-            .disposed(by: disposeBag)
-        
-        clearAllBetInfo
-            .withUnretained(self)
-            .subscribe(onNext: { owner, _ in
-                owner.chipInfoView.moneyString = ""
-                owner.hadBetLabel.text = ""
-                owner.chipInfoView.isHidden = true
-                owner.hadBetLabel.isHidden = true
-            })
-            .disposed(by: disposeBag)
+        chipInfoView.isHidden = model.betMoneyString.isEmpty
+        chipInfoView.moneyString = model.betMoneyString
+        hadBetLabel.isHidden = model.hadBetMoneyString.isEmpty
+        hadBetLabel.text = model.hadBetMoneyString
+    }
+    
+    func clearAllBetInfo() {
+        chipInfoView.moneyString = ""
+        hadBetLabel.text = ""
+        chipInfoView.isHidden = true
+        hadBetLabel.isHidden = true
     }
 }
+
+// MARK: - Output
+extension DTPlayCollectionViewCell: DTPlayCollectionCellOutputPrototype { }
