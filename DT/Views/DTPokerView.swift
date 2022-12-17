@@ -4,31 +4,39 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class DTPokerView: UIView {
+protocol DTPokerViewInputPrototype {
+    func setSuit(_: SuitModel)
+    func foldCard()
+    func flipCard()
+}
+
+protocol DTPokerViewOutputPrototype {
+    var finishFlipCard: Observable<Void> { get }
+}
+
+protocol DTPokerViewPrototype {
+    var input: DTPokerViewInputPrototype { get }
+    var output: DTPokerViewOutputPrototype { get }
+}
+
+class DTPokerView: UIView, DTPokerViewPrototype {
     
-    var suit: SuitModel {
-        set { _suit.accept(newValue) }
-        get { _suit.value }
-    }
-    
-    let foldCard = PublishRelay<Void>()
-    let flipCard = PublishRelay<Void>()
-    let finishFlipCard = PublishRelay<Void>()
+    var input: DTPokerViewInputPrototype { self }
+    var output: DTPokerViewOutputPrototype { self }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        bind()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let _suit = BehaviorRelay<SuitModel>(value: .init(suit: .heart, number: 1))
     private let cardBackImageView = UIImageView()
     private let suitLabel = UILabel()
     private let numLabel = UILabel()
+    private let _finishFlipCard = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -77,44 +85,41 @@ private extension DTPokerView {
     }
 }
 
-// MARK: - Bind
-private extension DTPokerView {
-    func bind() {
-        _suit
-            .withUnretained(self)
-            .subscribe(onNext: { owner, suit in
-                let color = suit.suit.color
-                owner.suitLabel.textColor = color
-                owner.numLabel.textColor = color
-                
-                owner.suitLabel.text = suit.suit.title
-                owner.numLabel.text = "\(suit.number)"
-            })
-            .disposed(by: disposeBag)
+// MARK: Input
+extension DTPokerView: DTPokerViewInputPrototype {
+    func setSuit(_ suit: SuitModel) {
+        let color = suit.suit.color
+        suitLabel.textColor = color
+        numLabel.textColor = color
         
-        foldCard
-            .withUnretained(self)
-            .subscribe(onNext: { owner, _ in
-                owner.cardBackImageView.isHidden = false
-                owner.suitLabel.isHidden = true
-                owner.numLabel.isHidden = true
-            })
-            .disposed(by: disposeBag)
-        
-        flipCard
-            .withUnretained(self)
-            .subscribe(onNext: { owner, _ in
-                UIView.transition(with: self,
-                                  duration: 0.5,
-                                  options: .transitionFlipFromLeft,
-                                  animations: {
-                    owner.cardBackImageView.isHidden = true
-                    owner.suitLabel.isHidden = false
-                    owner.numLabel.isHidden = false
-                }, completion: { _ in
-                    owner.finishFlipCard.accept(())
-                })
-            })
-            .disposed(by: disposeBag)
+        suitLabel.text = suit.suit.title
+        numLabel.text = "\(suit.number)"
+    }
+    
+    func foldCard() {
+        cardBackImageView.isHidden = false
+        suitLabel.isHidden = true
+        numLabel.isHidden = true
+    }
+    
+    func flipCard() {
+        UIView.transition(with: self,
+                          duration: 0.5,
+                          options: .transitionFlipFromLeft,
+                          animations: { [weak self] in
+            guard let self = self else { return }
+            self.cardBackImageView.isHidden = true
+            self.suitLabel.isHidden = false
+            self.numLabel.isHidden = false
+        }, completion: { _ in
+            self._finishFlipCard.accept(())
+        })
+    }
+}
+
+// MARK: - Output
+extension DTPokerView: DTPokerViewOutputPrototype {
+    var finishFlipCard: RxSwift.Observable<Void> {
+        _finishFlipCard.asObservable()
     }
 }

@@ -58,19 +58,20 @@ private extension DTPokerResultView {
         showResultWithoutAnimation
             .withUnretained(self)
             .subscribe(onNext: { owner, result in
-                owner.dragonPoker.suit = result.dragon
-                owner.tigerPoker.suit = result.tiger
+                owner.dragonPoker.input.setSuit(result.dragon)
+                owner.tigerPoker.input.setSuit(result.tiger)
             })
             .disposed(by: disposeBag)
         
         showResultWithAnimation
             .withUnretained(self)
             .subscribe(onNext: { owner, result in
-                owner.dragonPoker.suit = result.dragon
-                owner.tigerPoker.suit = result.tiger
-                owner.dragonPoker.flipCard.accept(())
+                owner.dragonPoker.input.setSuit(result.dragon)
+                owner.tigerPoker.input.setSuit(result.tiger)
+                owner.dragonPoker.input.flipCard()
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    owner.tigerPoker.flipCard.accept(())
+                    owner.tigerPoker.input.flipCard()
                 }
             })
             .disposed(by: disposeBag)
@@ -83,6 +84,7 @@ private extension DTPokerResultView {
             .disposed(by: disposeBag)
         
         tigerPoker
+            .output
             .finishFlipCard
             .bind(to: finishFlipCard)
             .disposed(by: disposeBag)
@@ -102,8 +104,8 @@ private extension DTPokerResultView {
             $0.size.equalTo(dragonPoker)
         }
         
-        dragonPoker.foldCard.accept(())
-        tigerPoker.foldCard.accept(())
+        dragonPoker.input.foldCard()
+        tigerPoker.input.foldCard()
         
         dragonPoker.isHidden = false
         tigerPoker.isHidden = false
