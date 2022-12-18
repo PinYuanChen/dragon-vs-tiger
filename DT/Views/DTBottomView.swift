@@ -4,11 +4,23 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class DTBottomView: UIView {
+protocol DTBottomInputPrototype { }
+
+protocol DTBottomOutputPrototype {
+    var selectedIndex: Observable<Int> { get }
+    var didTappedCancelButton: Observable<Void> { get }
+    var didTappedConfirmButton: Observable<Void> { get }
+}
+
+protocol DTBottomPrototype {
+    var input: DTBottomInputPrototype { get }
+    var output: DTBottomOutputPrototype { get }
+}
+
+class DTBottomView: UIView, DTBottomPrototype {
     
-    let selectedIndex = BehaviorRelay<Int>(value: 0)
-    let didTappedCancelButton = PublishRelay<Void>()
-    let didTappedConfirmButton = PublishRelay<Void>()
+    var input: DTBottomInputPrototype { self }
+    var output: DTBottomOutputPrototype { self }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,6 +37,9 @@ class DTBottomView: UIView {
                                                   collectionViewLayout: .init())
     private let cancelButton = UIButton()
     private let confirmButton = UIButton()
+    private let _selectedIndex = BehaviorRelay<Int>(value: 0)
+    private let _didTappedCancelButton = PublishRelay<Void>()
+    private let _didTappedConfirmButton = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -129,7 +144,7 @@ private extension DTBottomView {
             .itemSelected
             .withUnretained(self)
             .subscribe(onNext: { owner, indexPath in
-                owner.selectedIndex.accept(indexPath.item)
+                owner._selectedIndex.accept(indexPath.item)
                 owner.collectionView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -137,13 +152,13 @@ private extension DTBottomView {
         cancelButton
             .rx
             .tap
-            .bind(to: didTappedCancelButton)
+            .bind(to: _didTappedCancelButton)
             .disposed(by: disposeBag)
         
         confirmButton
             .rx
             .tap
-            .bind(to: didTappedConfirmButton)
+            .bind(to: _didTappedConfirmButton)
             .disposed(by: disposeBag)
     }
 }
@@ -170,7 +185,25 @@ extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         }
         let chipType = ChipType.allCases
         cell.type = chipType[indexPath.item]
-        cell.didSelected.accept(indexPath.item == selectedIndex.value)
+        cell.didSelected.accept(indexPath.item == _selectedIndex.value)
         return cell
+    }
+}
+
+// MARK: - Input
+extension DTBottomView: DTBottomInputPrototype { }
+
+// MARK: - Output
+extension DTBottomView: DTBottomOutputPrototype {
+    var selectedIndex: Observable<Int> {
+        _selectedIndex.asObservable()
+    }
+    
+    var didTappedCancelButton: Observable<Void> {
+        _didTappedCancelButton.asObservable()
+    }
+    
+    var didTappedConfirmButton: Observable<Void> {
+        _didTappedConfirmButton.asObservable()
     }
 }

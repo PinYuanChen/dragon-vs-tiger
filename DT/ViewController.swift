@@ -133,6 +133,7 @@ private extension ViewController {
             .disposed(by: disposeBag)
         
         bottomView
+            .output
             .selectedIndex
             .withUnretained(viewModel)
             .subscribe(onNext: { owner, index in
@@ -141,6 +142,7 @@ private extension ViewController {
             .disposed(by: disposeBag)
         
         bottomView
+            .output
             .didTappedCancelButton
             .withUnretained(viewModel)
             .subscribe(onNext: { owner, _ in
@@ -149,6 +151,7 @@ private extension ViewController {
             .disposed(by: disposeBag)
         
         bottomView
+            .output
             .didTappedConfirmButton
             .withUnretained(viewModel)
             .subscribe(onNext: { owner, _ in
