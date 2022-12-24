@@ -4,6 +4,16 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+protocol DTPlayPrototype {
+    
+    associatedtype Input
+    associatedtype Output
+    
+    var input: Input { get }
+    var output: Output { get }
+}
+
+/*
 protocol DTPlayInputPrototype {
     func setPlayOptions(_: DTPlayCateModel)
     func updateSelectedPlayModels(_: [UpdateSelectedPlayModel])
@@ -19,16 +29,31 @@ protocol DTPlayPrototype {
     var input: DTPlayInputPrototype { get }
     var output: DTPlayOutputPrototype { get }
 }
+*/
 
 class DTPlayView: UIView, DTPlayPrototype {
     
-    var input: DTPlayInputPrototype { self }
-    var output: DTPlayOutputPrototype { self }
+    let input: Input
+    let output: Output
+    
+    struct Input {
+        let setPlayOptions = PublishRelay<DTPlayCateModel>()
+        let updateSelectedPlayModels = PublishRelay<[UpdateSelectedPlayModel]>()
+        let setInteractionEnabled = PublishRelay<Bool>()
+        let clearAllBet = PublishRelay<Void>()
+    }
+    
+    struct Output {
+        let selectedPlay = PublishRelay<SelectedPlayModel>()
+    }
     
     override init(frame: CGRect) {
+        self.input = Input()
+        self.output = Output()
         super.init(frame: frame)
         setupUI()
         bind()
+        bindInputOutput()
     }
     
     required init?(coder: NSCoder) {
@@ -113,6 +138,32 @@ private extension DTPlayView {
             })
             .disposed(by: disposeBag)
     }
+    
+    func bindInputOutput() {
+        input
+            .setPlayOptions
+            .bind(to: _playOptions)
+            .disposed(by: disposeBag)
+        
+        input
+            .updateSelectedPlayModels
+            .bind(to: _updateSelectedPlayModels)
+            .disposed(by: disposeBag)
+        
+        input
+            .setInteractionEnabled
+            .bind(to: _isInteractionEnabled)
+            .disposed(by: disposeBag)
+        
+        input
+            .clearAllBet
+            .bind(to: _clearAllBet)
+            .disposed(by: disposeBag)
+        
+        _selectedPlay
+            .bind(to: output.selectedPlay)
+            .disposed(by: disposeBag)
+    }
 }
 
 extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -140,19 +191,19 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
             return .init()
         }
         
-        cell.input.setPlayOptionInfo(playType[indexPath.item])
+        cell.input.setPlayOptionInfo.accept(playType[indexPath.item])
         
         _updateSelectedPlayModels
             .withUnretained(cell)
             .subscribe(onNext: { owner, models in
-                cell.input.updateSelectedPlayModels(models)
+                cell.input.updateSelectedPlayModels.accept(models)
             })
             .disposed(by: cell.reuseDisposeBag)
         
         _clearAllBet
             .withUnretained(cell)
             .subscribe(onNext: { owner, _ in
-                owner.clearAllBetInfo()
+                owner.input.clearAllBetInfo.accept(())
             })
             .disposed(by: cell.reuseDisposeBag)
         
@@ -164,6 +215,7 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
 }
 
 // MARK: - Input
+/*
 extension DTPlayView: DTPlayInputPrototype {
     func setPlayOptions(_ options: DTPlayCateModel) {
         _playOptions.accept(options)
@@ -188,3 +240,4 @@ extension DTPlayView: DTPlayOutputPrototype {
         _selectedPlay.asObservable()
     }
 }
+*/
