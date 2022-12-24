@@ -125,6 +125,7 @@ private extension ViewController {
             .disposed(by: disposeBag)
         
         playView
+            .output
             .selectedPlay
             .withUnretained(viewModel)
             .subscribe(onNext: { owner, selectedPlay in
@@ -167,7 +168,7 @@ private extension ViewController {
             .playOptions
             .withUnretained(self)
             .subscribe(onNext: { owner, options in
-                owner.playView.input.setPlayOptions(options)
+                owner.playView.input.setPlayOptions.accept(options)
             })
             .disposed(by: disposeBag)
         
@@ -204,7 +205,7 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 // tmp
-                owner.playView.input.setInteractionEnabled(true)
+                owner.playView.input.setInteractionEnabled.accept(true)
                 
                 if owner.timer == nil {
                     owner.countDownNum = 0
@@ -224,7 +225,7 @@ private extension ViewController {
             .updateSelectedPlayModels
             .withUnretained(playView)
             .subscribe(onNext: { owner, models in
-                owner.input.updateSelectedPlayModels(models)
+                owner.input.updateSelectedPlayModels.accept(models)
             })
             .disposed(by: disposeBag)
         
@@ -233,7 +234,7 @@ private extension ViewController {
             .clearAllBet
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.playView.input.clearAllBet()
+                owner.playView.input.clearAllBet.accept(())
                 owner.animationView.input.enableBetting(true)
             })
             .disposed(by: disposeBag)
@@ -260,7 +261,7 @@ private extension ViewController {
             invalidate()
             animationView.input.beginAnimation()
             animationView.input.enableBetting(false)
-            playView.input.setInteractionEnabled(false)
+            playView.input.setInteractionEnabled.accept(false)
             viewModel.input.cancelReadyBet()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
