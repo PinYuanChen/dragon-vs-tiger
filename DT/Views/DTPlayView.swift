@@ -4,15 +4,6 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-protocol DTPlayPrototype {
-    
-    associatedtype Input
-    associatedtype Output
-    
-    var input: Input { get }
-    var output: Output { get }
-}
-
 /*
 protocol DTPlayInputPrototype {
     func setPlayOptions(_: DTPlayCateModel)
@@ -31,25 +22,23 @@ protocol DTPlayPrototype {
 }
 */
 
-class DTPlayView: UIView, DTPlayPrototype {
+enum DTPlayViewInput {
+    case setPlayOptions(options: DTPlayCateModel)
+    case updateSelectedPlayModels(model: [UpdateSelectedPlayModel])
+    case setInteractionEnabled(enabled: Bool)
+    case clearAllBet
+}
+
+enum DTPlayViewOutput {
+    case selectedPlay(selectedModel: SelectedPlayModel)
+}
+
+class DTPlayView: UIView {
     
-    let input: Input
-    let output: Output
-    
-    struct Input {
-        let setPlayOptions = PublishRelay<DTPlayCateModel>()
-        let updateSelectedPlayModels = PublishRelay<[UpdateSelectedPlayModel]>()
-        let setInteractionEnabled = PublishRelay<Bool>()
-        let clearAllBet = PublishRelay<Void>()
-    }
-    
-    struct Output {
-        let selectedPlay = PublishRelay<SelectedPlayModel>()
-    }
+    let input = PublishRelay<DTPlayViewInput>()
+    let output = PublishRelay<DTPlayViewOutput>()
     
     override init(frame: CGRect) {
-        self.input = Input()
-        self.output = Output()
         super.init(frame: frame)
         setupUI()
         bind()
@@ -141,27 +130,24 @@ private extension DTPlayView {
     
     func bindInputOutput() {
         input
-            .setPlayOptions
-            .bind(to: _playOptions)
-            .disposed(by: disposeBag)
-        
-        input
-            .updateSelectedPlayModels
-            .bind(to: _updateSelectedPlayModels)
-            .disposed(by: disposeBag)
-        
-        input
-            .setInteractionEnabled
-            .bind(to: _isInteractionEnabled)
-            .disposed(by: disposeBag)
-        
-        input
-            .clearAllBet
-            .bind(to: _clearAllBet)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, type in
+                switch type {
+                case .setPlayOptions(options: let options):
+                    owner._playOptions.accept(options)
+                case .updateSelectedPlayModels(model: let model):
+                    owner._updateSelectedPlayModels.accept(model)
+                case .setInteractionEnabled(enabled: let enabled):
+                    owner._isInteractionEnabled.accept(enabled)
+                case .clearAllBet:
+                    owner._clearAllBet.accept(())
+                }
+            })
             .disposed(by: disposeBag)
         
         _selectedPlay
-            .bind(to: output.selectedPlay)
+            .map { DTPlayViewOutput.selectedPlay(selectedModel: $0)}
+            .bind(to: output)
             .disposed(by: disposeBag)
     }
 }

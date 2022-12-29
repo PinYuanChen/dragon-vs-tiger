@@ -126,10 +126,12 @@ private extension ViewController {
         
         playView
             .output
-            .selectedPlay
             .withUnretained(viewModel)
-            .subscribe(onNext: { owner, selectedPlay in
-                owner.input.getSelectedPlay(selectedPlay)
+            .subscribe(onNext: { owner, type in
+                switch type {
+                case .selectedPlay(let play):
+                    owner.input.getSelectedPlay(play)
+                }
             })
             .disposed(by: disposeBag)
         
@@ -168,7 +170,7 @@ private extension ViewController {
             .playOptions
             .withUnretained(self)
             .subscribe(onNext: { owner, options in
-                owner.playView.input.setPlayOptions.accept(options)
+                owner.playView.input.accept(.setPlayOptions(options: options))
             })
             .disposed(by: disposeBag)
         
@@ -205,7 +207,7 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 // tmp
-                owner.playView.input.setInteractionEnabled.accept(true)
+                owner.playView.input.accept(.setInteractionEnabled(enabled: true))
                 
                 if owner.timer == nil {
                     owner.countDownNum = 0
@@ -225,7 +227,7 @@ private extension ViewController {
             .updateSelectedPlayModels
             .withUnretained(playView)
             .subscribe(onNext: { owner, models in
-                owner.input.updateSelectedPlayModels.accept(models)
+                owner.input.accept(.updateSelectedPlayModels(model: models))
             })
             .disposed(by: disposeBag)
         
@@ -234,7 +236,7 @@ private extension ViewController {
             .clearAllBet
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.playView.input.clearAllBet.accept(())
+                owner.playView.input.accept(.clearAllBet)
                 owner.animationView.input.enableBetting(true)
             })
             .disposed(by: disposeBag)
@@ -261,7 +263,7 @@ private extension ViewController {
             invalidate()
             animationView.input.beginAnimation()
             animationView.input.enableBetting(false)
-            playView.input.setInteractionEnabled.accept(false)
+            playView.input.accept(.setInteractionEnabled(enabled: false))
             viewModel.input.cancelReadyBet()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
