@@ -4,29 +4,25 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-protocol DTPokerViewInputPrototype {
-    func setSuit(_: SuitModel)
-    func foldCard()
-    func flipCard()
+enum DTPokerViewInput {
+    case setSuit(suit: SuitModel)
+    case foldCard
+    case flipCard
 }
 
-protocol DTPokerViewOutputPrototype {
-    var finishFlipCard: Observable<Void> { get }
+enum DTPokerViewOutput {
+    case finishFlipCard
 }
 
-protocol DTPokerViewPrototype {
-    var input: DTPokerViewInputPrototype { get }
-    var output: DTPokerViewOutputPrototype { get }
-}
-
-class DTPokerView: UIView, DTPokerViewPrototype {
+class DTPokerView: UIView {
     
-    var input: DTPokerViewInputPrototype { self }
-    var output: DTPokerViewOutputPrototype { self }
+    var input = PublishRelay<DTPokerViewInput>()
+    var output = PublishRelay<DTPokerViewOutput>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        bindInputOutput()
     }
     
     required init?(coder: NSCoder) {
@@ -36,7 +32,6 @@ class DTPokerView: UIView, DTPokerViewPrototype {
     private let cardBackImageView = UIImageView()
     private let suitLabel = UILabel()
     private let numLabel = UILabel()
-    private let _finishFlipCard = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -85,8 +80,27 @@ private extension DTPokerView {
     }
 }
 
-// MARK: Input
-extension DTPokerView: DTPokerViewInputPrototype {
+// MARK: - Binding
+private extension DTPokerView {
+    func bindInputOutput() {
+        input
+            .withUnretained(self)
+            .subscribe(onNext: { owner, input in
+                switch input {
+                case .setSuit(suit: let suit):
+                    owner.setSuit(suit)
+                case .foldCard:
+                    owner.foldCard()
+                case .flipCard:
+                    owner.flipCard()
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - Private functions
+extension DTPokerView {
     func setSuit(_ suit: SuitModel) {
         let color = suit.suit.color
         suitLabel.textColor = color
@@ -112,14 +126,7 @@ extension DTPokerView: DTPokerViewInputPrototype {
             self.suitLabel.isHidden = false
             self.numLabel.isHidden = false
         }, completion: { _ in
-            self._finishFlipCard.accept(())
+            self.output.accept(.finishFlipCard)
         })
-    }
-}
-
-// MARK: - Output
-extension DTPokerView: DTPokerViewOutputPrototype {
-    var finishFlipCard: RxSwift.Observable<Void> {
-        _finishFlipCard.asObservable()
     }
 }
