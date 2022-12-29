@@ -4,19 +4,16 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-protocol DTPlayCollectionCellPrototype {
-    
-    associatedtype Input
-    associatedtype Output
-    
-    var input: Input { get }
-    var output: Output { get }
+
+enum DTPlayCollecitonCellInput {
+    case setPlayOptionInfo(playModel: DTPlayModel)
+    case updateSelectedPlayModels(models: [UpdateSelectedPlayModel])
+    case clearAllBetInfo
 }
 
-class DTPlayCollectionViewCell: UICollectionViewCell, DTPlayCollectionCellPrototype {
-   
-    let input: Input
-    var output: Output
+class DTPlayCollectionViewCell: UICollectionViewCell {
+    
+    let input = PublishRelay<DTPlayCollecitonCellInput>()
     
     struct Input {
         let setPlayOptionInfo = PublishRelay<DTPlayModel>()
@@ -29,8 +26,6 @@ class DTPlayCollectionViewCell: UICollectionViewCell, DTPlayCollectionCellProtot
     var reuseDisposeBag = DisposeBag()
     
     override init(frame: CGRect) {
-        self.input = Input()
-        self.output = Output()
         super.init(frame: frame)
         setupUI()
         bind()
@@ -135,44 +130,50 @@ private extension DTPlayCollectionViewCell {
 
 private extension DTPlayCollectionViewCell {
     func bind() {
-        input
-            .setPlayOptionInfo
-            .withUnretained(self)
-            .subscribe(onNext: { owner, play in
-                owner._playOptionInfo = play
-                owner.titleLabel.text = play.playCode.title
-                owner.oddsLabel.text = play.odds
-            })
-            .disposed(by: disposeBag)
         
         input
-            .updateSelectedPlayModels
             .withUnretained(self)
-            .subscribe(onNext: { owner, selectedPlayModels in
-                guard let play = owner._playOptionInfo,
-                      let model = selectedPlayModels.filter({
-                    $0.playCode == play.playCode.rawValue
-                }).first else {
-                    owner.chipInfoView.isHidden = true
-                    return
+            .subscribe(onNext: { owner, type in
+                switch type {
+                case .setPlayOptionInfo(playModel: let playModel):
+                    owner.setPlayOptionInfo(playModel: playModel)
+                case .updateSelectedPlayModels(models: let models):
+                    owner.updateSelectedPlayModels(models: models)
+                case .clearAllBetInfo:
+                    owner.clearAllBetInfo()
                 }
-                
-                owner.chipInfoView.isHidden = model.betMoneyString.isEmpty
-                owner.chipInfoView.moneyString = model.betMoneyString
-                owner.hadBetLabel.isHidden = model.hadBetMoneyString.isEmpty
-                owner.hadBetLabel.text = model.hadBetMoneyString
             })
             .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - Private functions
+private extension DTPlayCollectionViewCell {
+    func setPlayOptionInfo(playModel: DTPlayModel) {
+        _playOptionInfo = playModel
+        titleLabel.text = playModel.playCode.title
+        oddsLabel.text = playModel.odds
+    }
+    
+    func updateSelectedPlayModels(models selectedPlayModels: [UpdateSelectedPlayModel]) {
+        guard let play = _playOptionInfo,
+              let model = selectedPlayModels.filter({
+                  $0.playCode == play.playCode.rawValue
+              }).first else {
+            chipInfoView.isHidden = true
+            return
+        }
         
-        input
-            .clearAllBetInfo
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
-                self.chipInfoView.moneyString = ""
-                self.hadBetLabel.text = ""
-                self.chipInfoView.isHidden = true
-                self.hadBetLabel.isHidden = true
-            })
-            .disposed(by: disposeBag)
+        chipInfoView.isHidden = model.betMoneyString.isEmpty
+        chipInfoView.moneyString = model.betMoneyString
+        hadBetLabel.isHidden = model.hadBetMoneyString.isEmpty
+        hadBetLabel.text = model.hadBetMoneyString
+    }
+    
+    func clearAllBetInfo() {
+        chipInfoView.moneyString = ""
+        hadBetLabel.text = ""
+        chipInfoView.isHidden = true
+        hadBetLabel.isHidden = true
     }
 }

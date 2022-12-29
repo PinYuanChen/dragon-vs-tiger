@@ -4,24 +4,6 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-/*
-protocol DTPlayInputPrototype {
-    func setPlayOptions(_: DTPlayCateModel)
-    func updateSelectedPlayModels(_: [UpdateSelectedPlayModel])
-    func setInteractionEnabled(_: Bool)
-    func clearAllBet()
-}
-
-protocol DTPlayOutputPrototype {
-    var selectedPlay: Observable<SelectedPlayModel> { get }
-}
-
-protocol DTPlayPrototype {
-    var input: DTPlayInputPrototype { get }
-    var output: DTPlayOutputPrototype { get }
-}
-*/
-
 enum DTPlayViewInput {
     case setPlayOptions(options: DTPlayCateModel)
     case updateSelectedPlayModels(model: [UpdateSelectedPlayModel])
@@ -177,19 +159,19 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
             return .init()
         }
         
-        cell.input.setPlayOptionInfo.accept(playType[indexPath.item])
+        cell.input.accept(.setPlayOptionInfo(playModel: playType[indexPath.item]))
         
         _updateSelectedPlayModels
             .withUnretained(cell)
             .subscribe(onNext: { owner, models in
-                cell.input.updateSelectedPlayModels.accept(models)
+                cell.input.accept(.updateSelectedPlayModels(models: models))
             })
             .disposed(by: cell.reuseDisposeBag)
         
         _clearAllBet
             .withUnretained(cell)
             .subscribe(onNext: { owner, _ in
-                owner.input.clearAllBetInfo.accept(())
+                owner.input.accept(.clearAllBetInfo)
             })
             .disposed(by: cell.reuseDisposeBag)
         
@@ -199,31 +181,3 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
         return cell
     }
 }
-
-// MARK: - Input
-/*
-extension DTPlayView: DTPlayInputPrototype {
-    func setPlayOptions(_ options: DTPlayCateModel) {
-        _playOptions.accept(options)
-    }
-    
-    func updateSelectedPlayModels(_ selectedPlays: [UpdateSelectedPlayModel]) {
-        _updateSelectedPlayModels.accept(selectedPlays)
-    }
-    
-    func setInteractionEnabled(_ enabled: Bool) {
-        _isInteractionEnabled.accept(enabled)
-    }
-    
-    func clearAllBet() {
-        _clearAllBet.accept(())
-    }
-}
-
-// MARK: - Output
-extension DTPlayView: DTPlayOutputPrototype {
-    var selectedPlay: RxSwift.Observable<SelectedPlayModel> {
-        _selectedPlay.asObservable()
-    }
-}
-*/
