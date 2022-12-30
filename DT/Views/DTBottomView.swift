@@ -4,33 +4,27 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-protocol DTBottomInputPrototype { }
-
-protocol DTBottomOutputPrototype {
-    var selectedIndex: Observable<Int> { get }
-    var didTappedCancelButton: Observable<Void> { get }
-    var didTappedConfirmButton: Observable<Void> { get }
+enum DTBottomOutput {
+    case selectedIndex(index: Int)
+    case didTappedCancelButton
+    case didTappedConfirmButton
 }
 
-protocol DTBottomPrototype {
-    var input: DTBottomInputPrototype { get }
-    var output: DTBottomOutputPrototype { get }
-}
-
-class DTBottomView: UIView, DTBottomPrototype {
+class DTBottomView: UIView {
     
-    var input: DTBottomInputPrototype { self }
-    var output: DTBottomOutputPrototype { self }
+    var output = PublishRelay<DTBottomOutput>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
         bind()
+        bindInputOutput()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     private let leftButton = UIButton()
     private let rightButton = UIButton()
     private let collectionView = UICollectionView(frame: .zero,
@@ -183,6 +177,23 @@ private extension DTBottomView {
             .bind(to: _selectedIndex)
             .disposed(by: disposeBag)
     }
+    
+    func bindInputOutput() {
+        _selectedIndex
+            .map { DTBottomOutput.selectedIndex(index: $0) }
+            .bind(to: output)
+            .disposed(by: disposeBag)
+        
+        _didTappedCancelButton
+            .map { DTBottomOutput.didTappedCancelButton }
+            .bind(to: output)
+            .disposed(by: disposeBag)
+        
+        _didTappedConfirmButton
+            .map { DTBottomOutput.didTappedConfirmButton }
+            .bind(to: output)
+            .disposed(by: disposeBag)
+    }
 }
 
 // MARK: - UICollectionView Delegate
@@ -209,23 +220,5 @@ extension DTBottomView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         cell.type = chipType[indexPath.item]
         cell.didSelected.accept(indexPath.item == _selectedIndex.value)
         return cell
-    }
-}
-
-// MARK: - Input
-extension DTBottomView: DTBottomInputPrototype { }
-
-// MARK: - Output
-extension DTBottomView: DTBottomOutputPrototype {
-    var selectedIndex: Observable<Int> {
-        _selectedIndex.asObservable()
-    }
-    
-    var didTappedCancelButton: Observable<Void> {
-        _didTappedCancelButton.asObservable()
-    }
-    
-    var didTappedConfirmButton: Observable<Void> {
-        _didTappedConfirmButton.asObservable()
     }
 }
