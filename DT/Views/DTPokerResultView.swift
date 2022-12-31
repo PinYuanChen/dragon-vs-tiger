@@ -70,8 +70,13 @@ private extension DTPokerResultView {
     func bind() {
         tigerPoker
             .output
-            .finishFlipCard
-            .bind(to: _finishFlipCard)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, output in
+                switch output {
+                case .finishFlipCard:
+                    owner._finishFlipCard.accept(())
+                }
+            })
             .disposed(by: disposeBag)
     }
 }
@@ -79,13 +84,13 @@ private extension DTPokerResultView {
 // MARK: - Input
 extension DTPokerResultView: DTPokerResultInputPrototype {
     func showResult(_ result: GameResultModel, withAnimation: Bool) {
-        dragonPoker.input.setSuit(result.dragon)
-        tigerPoker.input.setSuit(result.tiger)
+        dragonPoker.input.accept(.setSuit(suit: result.dragon))
+        tigerPoker.input.accept(.setSuit(suit: result.tiger))
         
         if withAnimation {
-            dragonPoker.input.flipCard()
+            dragonPoker.input.accept(.flipCard)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.tigerPoker.input.flipCard()
+                self.tigerPoker.input.accept(.flipCard)
             }
         }
     }
@@ -117,8 +122,8 @@ private extension DTPokerResultView {
             $0.size.equalTo(dragonPoker)
         }
         
-        dragonPoker.input.foldCard()
-        tigerPoker.input.foldCard()
+        dragonPoker.input.accept(.foldCard)
+        tigerPoker.input.accept(.foldCard)
         
         dragonPoker.isHidden = false
         tigerPoker.isHidden = false

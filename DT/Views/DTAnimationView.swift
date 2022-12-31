@@ -4,32 +4,28 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-protocol DTAnimationInputPrototype {
-    func showResult(_: GameResultModel, withAnimation: Bool)
-    func beginAnimation()
-    func showWinner(_: String)
-    func enableBetting(_: Bool)
+enum DTAnimationInput {
+    case showResult(result: GameResultModel, withAnimation: Bool)
+    case beginAnimation
+    case showWinner(winner: String)
+    case enableBetting(enable: Bool)
 }
 
-protocol DTAnimationOutputPrototype {
-    var finishFlipCard: Observable<Void> { get }
-    var finishAnimation: Observable<Void> { get }
+enum DTAnimationOutput {
+    case finishFlipCard
+    case finishAnimation
 }
 
-protocol DTAnimationPrototype {
-    var input: DTAnimationInputPrototype { get }
-    var output: DTAnimationOutputPrototype { get }
-}
-
-class DTAnimationView: UIView, DTAnimationPrototype {
+class DTAnimationView: UIView {
     
-    var input: DTAnimationInputPrototype { self }
-    var output: DTAnimationOutputPrototype { self }
+    var input = PublishRelay<DTAnimationInput>()
+    var output = PublishRelay<DTAnimationOutput>()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
         bind()
+        bindInputOutput()
     }
     
     required init?(coder: NSCoder) {
@@ -115,10 +111,38 @@ private extension DTAnimationView {
             .bind(to: _finishFlipCard)
             .disposed(by: disposeBag)
     }
+    
+    func bindInputOutput() {
+        input
+            .withUnretained(self)
+            .subscribe(onNext: { owner, type in
+                switch type {
+                case .showResult(result: let result, withAnimation: let withAnimation):
+                    owner.showResult(result, withAnimation: withAnimation)
+                case .beginAnimation:
+                    owner.beginAnimation()
+                case .showWinner(winner: let winner):
+                    owner.showWinner(winner)
+                case .enableBetting(enable: let enable):
+                    owner.enableBetting(enable)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        _finishFlipCard
+            .map { DTAnimationOutput.finishFlipCard }
+            .bind(to: output)
+            .disposed(by: disposeBag)
+        
+        _finishAnimation
+            .map { DTAnimationOutput.finishAnimation }
+            .bind(to: output)
+            .disposed(by: disposeBag)
+    }
 }
 
-// MARK: - Input
-extension DTAnimationView: DTAnimationInputPrototype {
+// MARK: - Private functions
+extension DTAnimationView {
     func showResult(_ result: GameResultModel, withAnimation: Bool) {
         pokerResultView.input.showResult(result, withAnimation: withAnimation)
     }
@@ -165,16 +189,5 @@ extension DTAnimationView: DTAnimationInputPrototype {
         statusLabel.backgroundColor = enabled ? .systemBlue : .systemRed
         statusLabel.text = enabled ? "開盤" : "封盤"
         statusLabel.fadeInAndOut(duration: 0.5)
-    }
-}
-
-// MARK: - Output
-extension DTAnimationView: DTAnimationOutputPrototype {
-    var finishFlipCard: Observable<Void> {
-        _finishFlipCard.asObservable()
-    }
-    
-    var finishAnimation: Observable<Void> {
-        _finishAnimation.asObservable()
     }
 }

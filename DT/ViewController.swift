@@ -108,57 +108,45 @@ private extension ViewController {
 private extension ViewController {
     func bind() {
         animationView
-            .finishFlipCard
-            .withUnretained(self)
-            .subscribe(onNext: { owner, _ in
-                owner.viewModel.input.getWinPlay()
-            })
-            .disposed(by: disposeBag)
-        
-        animationView
-            .finishAnimation
+            .output
             .withUnretained(viewModel)
-            .subscribe(onNext: { owner, _ in
-                owner.input.clearAllBetInfo(withAnimation: true)
-                owner.input.getCurrentTime()
+            .subscribe(onNext: { owner, type in
+                switch type {
+                case .finishFlipCard:
+                    owner.input.getWinPlay()
+                case .finishAnimation:
+                    owner.input.clearAllBetInfo(withAnimation: true)
+                    owner.input.getCurrentTime()
+                }
             })
             .disposed(by: disposeBag)
         
         playView
             .output
-            .selectedPlay
             .withUnretained(viewModel)
-            .subscribe(onNext: { owner, selectedPlay in
-                owner.input.getSelectedPlay(selectedPlay)
+            .subscribe(onNext: { owner, type in
+                switch type {
+                case .selectedPlay(let play):
+                    owner.input.getSelectedPlay(play)
+                }
             })
             .disposed(by: disposeBag)
         
         bottomView
             .output
-            .selectedIndex
             .withUnretained(viewModel)
-            .subscribe(onNext: { owner, index in
-                owner.input.getSelectedChipIndex(index)
+            .subscribe(onNext: { owner, type in
+                switch type {
+                case .selectedIndex(index: let index):
+                    owner.input.getSelectedChipIndex(index)
+                case .didTappedCancelButton:
+                    owner.input.cancelReadyBet()
+                case .didTappedConfirmButton:
+                    owner.input.confirmReadyBet()
+                }
             })
             .disposed(by: disposeBag)
         
-        bottomView
-            .output
-            .didTappedCancelButton
-            .withUnretained(viewModel)
-            .subscribe(onNext: { owner, _ in
-                owner.input.cancelReadyBet()
-            })
-            .disposed(by: disposeBag)
-        
-        bottomView
-            .output
-            .didTappedConfirmButton
-            .withUnretained(viewModel)
-            .subscribe(onNext: { owner, _ in
-                owner.input.confirmReadyBet()
-            })
-            .disposed(by: disposeBag)
     }
     
     func bind(viewModel: DTViewModelPrototype) {
@@ -168,7 +156,7 @@ private extension ViewController {
             .playOptions
             .withUnretained(self)
             .subscribe(onNext: { owner, options in
-                owner.playView.input.setPlayOptions.accept(options)
+                owner.playView.input.accept(.setPlayOptions(options: options))
             })
             .disposed(by: disposeBag)
         
@@ -177,7 +165,7 @@ private extension ViewController {
             .lastGameResult
             .withUnretained(animationView)
             .subscribe(onNext: { owner, result in
-                owner.input.showResult(result, withAnimation: false)
+                owner.input.accept(.showResult(result: result, withAnimation: false))
             })
             .disposed(by: disposeBag)
         
@@ -186,7 +174,7 @@ private extension ViewController {
             .gameResult
             .withUnretained(animationView)
             .subscribe(onNext: { owner, result in
-                owner.input.showResult(result, withAnimation: true)
+                owner.input.accept(.showResult(result: result, withAnimation: true))
             })
             .disposed(by: disposeBag)
         
@@ -195,7 +183,7 @@ private extension ViewController {
             .showWinPlay
             .withUnretained(animationView)
             .subscribe(onNext: { owner, winner in
-                owner.input.showWinner(winner)
+                owner.input.accept(.showWinner(winner: winner))
             })
             .disposed(by: disposeBag)
         
@@ -205,7 +193,7 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 // tmp
-                owner.playView.input.setInteractionEnabled.accept(true)
+                owner.playView.input.accept(.setInteractionEnabled(enabled: true))
                 
                 if owner.timer == nil {
                     owner.countDownNum = 0
@@ -225,7 +213,7 @@ private extension ViewController {
             .updateSelectedPlayModels
             .withUnretained(playView)
             .subscribe(onNext: { owner, models in
-                owner.input.updateSelectedPlayModels.accept(models)
+                owner.input.accept(.updateSelectedPlayModels(model: models))
             })
             .disposed(by: disposeBag)
         
@@ -234,8 +222,8 @@ private extension ViewController {
             .clearAllBet
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.playView.input.clearAllBet.accept(())
-                owner.animationView.input.enableBetting(true)
+                owner.playView.input.accept(.clearAllBet)
+                owner.animationView.input.accept(.enableBetting(enable: true))
             })
             .disposed(by: disposeBag)
         
@@ -259,9 +247,9 @@ private extension ViewController {
             countDownNum += 1
         } else {
             invalidate()
-            animationView.input.beginAnimation()
-            animationView.input.enableBetting(false)
-            playView.input.setInteractionEnabled.accept(false)
+            animationView.input.accept(.beginAnimation)
+            animationView.input.accept(.enableBetting(enable: false))
+            playView.input.accept(.setInteractionEnabled(enabled: false))
             viewModel.input.cancelReadyBet()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
