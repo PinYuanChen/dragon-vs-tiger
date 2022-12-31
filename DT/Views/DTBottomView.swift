@@ -139,14 +139,18 @@ private extension DTBottomView {
 // MARK: - Bind
 private extension DTBottomView {
     func bind() {
+        _selectedIndex
+            .withUnretained(collectionView)
+            .subscribe(onNext: { owner, _ in
+                owner.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
         collectionView
             .rx
             .itemSelected
-            .withUnretained(self)
-            .subscribe(onNext: { owner, indexPath in
-                owner._selectedIndex.accept(indexPath.item)
-                owner.collectionView.reloadData()
-            })
+            .map { $0.item }
+            .bind(to: _selectedIndex)
             .disposed(by: disposeBag)
         
         cancelButton
@@ -159,6 +163,24 @@ private extension DTBottomView {
             .rx
             .tap
             .bind(to: _didTappedConfirmButton)
+            .disposed(by: disposeBag)
+        
+        leftButton
+            .rx
+            .tap
+            .withLatestFrom(_selectedIndex) { ($0, $1) }
+            .filter { $0.1 > 0 }
+            .map { [unowned self] _ in self._selectedIndex.value - 1 }
+            .bind(to: _selectedIndex)
+            .disposed(by: disposeBag)
+        
+        rightButton
+            .rx
+            .tap
+            .withLatestFrom(_selectedIndex) { ($0, $1) }
+            .filter { $0.1 < ChipType.allCases.count - 1 }
+            .map { [unowned self] _ in self._selectedIndex.value + 1 }
+            .bind(to: _selectedIndex)
             .disposed(by: disposeBag)
     }
 }
