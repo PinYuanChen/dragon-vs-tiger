@@ -78,7 +78,7 @@ private extension DTBottomView {
         addSubview(collectionView)
         collectionView.snp.makeConstraints {
             $0.height.equalTo(100.zoom())
-            $0.width.equalTo(255.zoom())
+            $0.width.equalTo(260.zoom())
             $0.centerY.equalTo(leftButton)
             $0.leading.equalTo(leftButton.snp.trailing).offset(20.zoom())
         }

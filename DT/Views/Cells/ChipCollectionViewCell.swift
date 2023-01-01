@@ -10,6 +10,7 @@ enum ChipType: CaseIterable {
     case tenK
     case twentyK
     case fiftyK
+    case oneHunderedK
     
     var title: String {
         switch self {
@@ -23,6 +24,8 @@ enum ChipType: CaseIterable {
             return "20K"
         case .fiftyK:
             return "50K"
+        case .oneHunderedK:
+            return "100K"
         }
     }
     
@@ -38,6 +41,8 @@ enum ChipType: CaseIterable {
             return 20000
         case .fiftyK:
             return 50000
+        case .oneHunderedK:
+            return 100000
         }
     }
 }
