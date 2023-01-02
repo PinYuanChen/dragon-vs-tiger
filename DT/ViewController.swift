@@ -121,6 +121,10 @@ private extension ViewController {
             })
             .disposed(by: disposeBag)
         
+        animationView
+            .input
+            .accept(.enableBetting(enable: true))
+        
         playView
             .output
             .withUnretained(viewModel)
