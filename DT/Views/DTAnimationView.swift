@@ -35,7 +35,7 @@ class DTAnimationView: UIView {
     private let dragonImageView = UIImageView()
     private let tigerImageView = UIImageView()
     private let pokerResultView = DTPokerResultView(frame: .zero)
-    private let statusLabel = UILabel()
+    private let statusView = DTStatusView(frame: .zero)
     private let _finishFlipCard = PublishRelay<Void>()
     private let _finishAnimation = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
@@ -48,7 +48,7 @@ private extension DTAnimationView {
         setupDragonImage()
         setupTigerImage()
         setupPokerResultView()
-        setupStatusLabel()
+        setupstatusView()
     }
 
     func setupDragonImage() {
@@ -85,16 +85,12 @@ private extension DTAnimationView {
         }
     }
     
-    func setupStatusLabel() {
-        statusLabel.alpha = 0
-        statusLabel.font = .systemFont(ofSize: 20.zoom())
-        statusLabel.textColor = .white
-        statusLabel.textAlignment = .center
-        statusLabel.layer.cornerRadius = 10.zoom()
-        statusLabel.layer.masksToBounds = true
+    func setupstatusView() {
+        statusView.alpha = 0
+        statusView.layer.masksToBounds = true
         
-        addSubview(statusLabel)
-        statusLabel.snp.makeConstraints {
+        addSubview(statusView)
+        statusView.snp.makeConstraints {
             $0.center.equalToSuperview()
             $0.height.equalTo(40.zoom())
             $0.width.equalTo(200.zoom())
@@ -186,8 +182,8 @@ extension DTAnimationView {
     }
     
     func enableBetting(_ enabled: Bool) {
-        statusLabel.backgroundColor = enabled ? .systemBlue : .systemRed
-        statusLabel.text = enabled ? "開盤" : "封盤"
-        statusLabel.fadeInAndOut(duration: 0.5)
+        statusView.image = enabled ? .init(named: "bluebanner") : .init(named: "redbanner")
+        statusView.titleLabel.text = enabled ? "開盤" : "封盤"
+        statusView.fadeInAndOut(duration: 0.5)
     }
 }

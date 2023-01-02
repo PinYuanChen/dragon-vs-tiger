@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		709DC2E31DAAB55C83091288 /* Pods_DT_DTUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FE561B4694993F9CEED9BB5 /* Pods_DT_DTUITests.framework */; };
+		9B091D2F2962AD04002F6A5B /* DTStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B091D2E2962AD04002F6A5B /* DTStatusView.swift */; };
 		9B8DC37F2931EEA000E81CB3 /* DTPokerResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC37E2931EEA000E81CB3 /* DTPokerResultView.swift */; };
 		9B8DC3812931EF4900E81CB3 /* DTPokerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3802931EF4900E81CB3 /* DTPokerView.swift */; };
 		9B8DC3832931EFB300E81CB3 /* SuitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8DC3822931EFB300E81CB3 /* SuitModel.swift */; };
@@ -62,6 +63,7 @@
 		45D17A75834C98D64A72A5C4 /* Pods-DT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DT.debug.xcconfig"; path = "Target Support Files/Pods-DT/Pods-DT.debug.xcconfig"; sourceTree = "<group>"; };
 		6E81365B963834B31E6A69C9 /* Pods_DTTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DTTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		70F0675D6D8CA0508E07F672 /* Pods-DT-DTUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DT-DTUITests.debug.xcconfig"; path = "Target Support Files/Pods-DT-DTUITests/Pods-DT-DTUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		9B091D2E2962AD04002F6A5B /* DTStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTStatusView.swift; sourceTree = "<group>"; };
 		9B8DC37E2931EEA000E81CB3 /* DTPokerResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPokerResultView.swift; sourceTree = "<group>"; };
 		9B8DC3802931EF4900E81CB3 /* DTPokerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DTPokerView.swift; sourceTree = "<group>"; };
 		9B8DC3822931EFB300E81CB3 /* SuitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuitModel.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				9BE67CD32931E3FC001E00B3 /* DTAnimationView.swift */,
+				9B091D2E2962AD04002F6A5B /* DTStatusView.swift */,
 				9B8DC37E2931EEA000E81CB3 /* DTPokerResultView.swift */,
 				9B8DC3802931EF4900E81CB3 /* DTPokerView.swift */,
 				9BE67CD52931E450001E00B3 /* DTPlayView.swift */,
@@ -528,6 +531,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B8DC38D2932325200E81CB3 /* FlashView.swift in Sources */,
+				9B091D2F2962AD04002F6A5B /* DTStatusView.swift in Sources */,
 				9BA08FAF293B986100065DC9 /* ChipCollectionViewCell.swift in Sources */,
 				9B8DC3812931EF4900E81CB3 /* DTPokerView.swift in Sources */,
 				9BE5F948292E63D500067053 /* ViewController.swift in Sources */,
