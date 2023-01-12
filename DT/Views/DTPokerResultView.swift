@@ -33,8 +33,8 @@ class DTPokerResultView: UIView, DTPokerResultPrototype {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private let dragonPoker = DTPokerView(frame: .zero)
-    private let tigerPoker = DTPokerView(frame: .zero)
+    private let dragonPoker = DTPokerView()
+    private let tigerPoker = DTPokerView()
     private let _finishFlipCard = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }

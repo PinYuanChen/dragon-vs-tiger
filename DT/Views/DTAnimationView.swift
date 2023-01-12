@@ -34,7 +34,7 @@ class DTAnimationView: UIView {
     
     private let dragonImageView = UIImageView()
     private let tigerImageView = UIImageView()
-    private let pokerResultView = DTPokerResultView(frame: .zero)
+    private let pokerResultView = DTPokerResultView()
     private let statusView = DTStatusView(frame: .zero)
     private let _finishFlipCard = PublishRelay<Void>()
     private let _finishAnimation = PublishRelay<Void>()

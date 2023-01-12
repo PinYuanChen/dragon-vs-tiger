@@ -32,10 +32,10 @@ class ViewController: UIViewController {
     }
     
     private let titleLabel = UILabel()
-    private let countDownView = DTCountDownView(frame: .zero)
-    private let animationView = DTAnimationView(frame: .zero)
-    private let playView = DTPlayView(frame: .zero)
-    private let bottomView = DTBottomView(frame: .zero)
+    private let countDownView = DTCountDownView()
+    private let animationView = DTAnimationView()
+    private let playView = DTPlayView()
+    private let bottomView = DTBottomView()
     private var timer: Timer?
     private var countDownNum = 0
     private let disposeBag = DisposeBag()

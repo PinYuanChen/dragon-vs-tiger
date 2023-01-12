@@ -43,10 +43,10 @@ class DTPlayCollectionViewCell: UICollectionViewCell {
     
     private var _playOptionInfo: DTPlayModel?
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]>(value: [])
-    private let flashView = FlashView(frame: .zero)
+    private let flashView = FlashView()
     private let titleLabel = UILabel()
     private let oddsLabel = UILabel()
-    private let chipInfoView = ChipInfoView(frame: .zero)
+    private let chipInfoView = ChipInfoView()
     private let hadBetLabel = UILabel()
     private let disposeBag = DisposeBag()
 }
