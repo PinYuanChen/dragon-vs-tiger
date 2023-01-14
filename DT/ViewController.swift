@@ -13,12 +13,14 @@ import UIAdapter
 class ViewController: UIViewController {
     
     let viewModel = DTViewModel()
+    let playViewModel = DTPlayViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         bind()
         bind(viewModel: viewModel)
+        bind(playViewModel: playViewModel)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,7 +36,7 @@ class ViewController: UIViewController {
     private let titleLabel = UILabel()
     private let countDownView = DTCountDownView()
     private let animationView = DTAnimationView()
-    private let playView = DTPlayView()
+    private lazy var playView = DTPlayView(playViewModel)
     private let bottomView = DTBottomView()
     private var timer: Timer?
     private var countDownNum = 0
@@ -109,14 +111,14 @@ private extension ViewController {
     func bind() {
         animationView
             .output
-            .withUnretained(viewModel)
+            .withUnretained(self)
             .subscribe(onNext: { owner, type in
                 switch type {
                 case .finishFlipCard:
-                    owner.input.getWinPlay()
+                    owner.viewModel.input.getWinPlay()
                 case .finishAnimation:
-                    owner.input.clearAllBetInfo(withAnimation: true)
-                    owner.input.getCurrentTime()
+                    owner.playViewModel.input.clearAllBetInfo(withAnimation: true)
+                    owner.viewModel.input.getCurrentTime()
                 }
             })
             .disposed(by: disposeBag)
@@ -125,20 +127,9 @@ private extension ViewController {
             .input
             .accept(.enableBetting(enable: true))
         
-        playView
-            .output
-            .withUnretained(viewModel)
-            .subscribe(onNext: { owner, type in
-                switch type {
-                case .selectedPlay(let play):
-                    owner.input.getSelectedPlay(play)
-                }
-            })
-            .disposed(by: disposeBag)
-        
         bottomView
             .output
-            .withUnretained(viewModel)
+            .withUnretained(playViewModel)
             .subscribe(onNext: { owner, type in
                 switch type {
                 case .selectedIndex(index: let index):
@@ -154,15 +145,6 @@ private extension ViewController {
     }
     
     func bind(viewModel: DTViewModelPrototype) {
-        
-        viewModel
-            .output
-            .playOptions
-            .withUnretained(self)
-            .subscribe(onNext: { owner, options in
-                owner.playView.input.accept(.setPlayOptions(options: options))
-            })
-            .disposed(by: disposeBag)
         
         viewModel
             .output
@@ -197,7 +179,7 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 // tmp
-                owner.playView.input.accept(.setInteractionEnabled(enabled: true))
+                owner.playView.isUserInteractionEnabled = true
                 
                 if owner.timer == nil {
                     owner.countDownNum = 0
@@ -211,33 +193,21 @@ private extension ViewController {
                 }
             })
             .disposed(by: disposeBag)
-        
+                
         viewModel
-            .output
-            .updateSelectedPlayModels
-            .withUnretained(playView)
-            .subscribe(onNext: { owner, models in
-                owner.input.accept(.updateSelectedPlayModels(model: models))
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel
+            .input
+            .getLastGameResult()
+    }
+    
+    func bind(playViewModel: DTPlayViewModelPrototype) {
+        playViewModel
             .output
             .clearAllBet
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.playView.input.accept(.clearAllBet)
                 owner.animationView.input.accept(.enableBetting(enable: true))
             })
             .disposed(by: disposeBag)
-        
-        viewModel
-            .input
-            .getPlayOptions()
-        
-        viewModel
-            .input
-            .getLastGameResult()
     }
 }
 
@@ -253,8 +223,9 @@ private extension ViewController {
             invalidate()
             animationView.input.accept(.beginAnimation)
             animationView.input.accept(.enableBetting(enable: false))
-            playView.input.accept(.setInteractionEnabled(enabled: false))
-            viewModel.input.cancelReadyBet()
+            
+            playView.isUserInteractionEnabled = false
+            playViewModel.input.cancelReadyBet()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.viewModel.input.getGameResult()

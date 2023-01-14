@@ -4,27 +4,13 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-enum DTPlayViewInput {
-    case setPlayOptions(options: DTPlayCateModel)
-    case updateSelectedPlayModels(model: [UpdateSelectedPlayModel])
-    case setInteractionEnabled(enabled: Bool)
-    case clearAllBet
-}
-
-enum DTPlayViewOutput {
-    case selectedPlay(selectedModel: SelectedPlayModel)
-}
-
 class DTPlayView: UIView {
     
-    let input = PublishRelay<DTPlayViewInput>()
-    let output = PublishRelay<DTPlayViewOutput>()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    required init(_ viewModel: DTPlayViewModelPrototype) {
+        super.init(frame: .zero)
         setupUI()
         bind()
-        bindInputOutput()
+        bind(viewModel: viewModel)
     }
     
     required init?(coder: NSCoder) {
@@ -77,9 +63,8 @@ private extension DTPlayView {
     func bind() {
         _playOptions
             .compactMap { $0 }
-            .filter { !$0.playType.isEmpty }
             .withUnretained(collectionView)
-            .subscribe(onNext: { collectionView, options in
+            .subscribe(onNext: { collectionView, _ in
                 collectionView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -98,39 +83,44 @@ private extension DTPlayView {
                 owner._selectedPlay.accept(.init(cateCode: cateCode,
                                                 playCode: playCode.rawValue,
                                                 endPoint: .zero))
+                
             })
             .disposed(by: disposeBag)
         
-        _isInteractionEnabled
-            .withUnretained(self)
-            .subscribe(onNext: { owner, enabled in
-                owner.isUserInteractionEnabled = enabled
-                owner.alpha = enabled ? 1 : 0.5
-            })
+        rx
+            .observe(\.isUserInteractionEnabled)
+            .map { $0 ? 1 : 0.5 }
+            .asDriver(onErrorJustReturn: 1)
+            .drive(rx.alpha)
             .disposed(by: disposeBag)
     }
     
-    func bindInputOutput() {
-        input
-            .withUnretained(self)
-            .subscribe(onNext: { owner, type in
-                switch type {
-                case .setPlayOptions(options: let options):
-                    owner._playOptions.accept(options)
-                case .updateSelectedPlayModels(model: let model):
-                    owner._updateSelectedPlayModels.accept(model)
-                case .setInteractionEnabled(enabled: let enabled):
-                    owner._isInteractionEnabled.accept(enabled)
-                case .clearAllBet:
-                    owner._clearAllBet.accept(())
-                }
-            })
+    func bind(viewModel: DTPlayViewModelPrototype) {
+        viewModel
+            .output
+            .playOptions
+            .bind(to: _playOptions)
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
+            .clearAllBet
+            .bind(to: _clearAllBet)
+            .disposed(by: disposeBag)
+        
+        viewModel
+            .output
+            .updateSelectedPlayModels
+            .bind(to: _updateSelectedPlayModels)
             .disposed(by: disposeBag)
         
         _selectedPlay
-            .map { DTPlayViewOutput.selectedPlay(selectedModel: $0)}
-            .bind(to: output)
+            .subscribe(onNext: { selectPlay in
+                viewModel.input.getSelectedPlay(selectPlay: selectPlay)
+            })
             .disposed(by: disposeBag)
+        
+        viewModel.input.getPlayOptions()
     }
 }
 
@@ -175,9 +165,6 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
             })
             .disposed(by: cell.reuseDisposeBag)
         
-        _isInteractionEnabled
-            .bind(to: cell.rx.isUserInteractionEnabled)
-            .disposed(by: cell.reuseDisposeBag)
         return cell
     }
 }
