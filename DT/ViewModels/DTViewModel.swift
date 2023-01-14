@@ -226,35 +226,10 @@ private extension DTViewModel {
             
             let model = UpdateSelectedPlayModel(playCateCode: cateCode,
                                                 playCode: playCode,
-                                                betMoneyString: getMoneyString(readyBetMoney),
-                                                hadBetMoneyString: getMoneyString(hadBetMoney))
+                                                betMoneyString: readyBetMoney.toMoneyString,
+                                                hadBetMoneyString: hadBetMoney.toMoneyString)
             outputResult.append(model)
         }
         _updateSelectedPlayModels.accept(outputResult)
-    }
-    
-    func getMoneyString(_ money: Int) -> String {
-        let moneyString = "\(money)"
-        switch moneyString.count {
-        case let k where (k >= 4 && k < 7):
-            let result = money / 1000
-            return "\(result)K"
-        case let million where (million >= 7 && million < 10):
-            let result = money.quotientAndRemainder(dividingBy: 1000000)
-            if result.remainder > 0 {
-                return "\(result.quotient)M..."
-            } else {
-                return "\(result.quotient)M"
-            }
-        case let billion where billion >= 10:
-            let result = money.quotientAndRemainder(dividingBy: 1000000000)
-            if result.remainder > 0 {
-                return "\(result.quotient)B..."
-            } else {
-                return "\(result.quotient)B"
-            }
-        default:
-            return ""
-        }
     }
 }
