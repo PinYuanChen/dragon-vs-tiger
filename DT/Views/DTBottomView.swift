@@ -6,19 +6,19 @@ import RxCocoa
 
 enum DTBottomOutput {
     case selectedIndex(index: Int)
-    case didTappedCancelButton
-    case didTappedConfirmButton
 }
 
 class DTBottomView: UIView {
     
     var output = PublishRelay<DTBottomOutput>()
+    let cancelButton = UIButton()
+    let confirmButton = UIButton()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    required init(_ viewModel: DTBottomViewModelPrototype) {
+        super.init(frame: .zero)
         setupUI()
         bind()
-        bindInputOutput()
+        bind(viewModel: viewModel)
     }
     
     required init?(coder: NSCoder) {
@@ -29,11 +29,7 @@ class DTBottomView: UIView {
     private let rightButton = UIButton()
     private let collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: .init())
-    private let cancelButton = UIButton()
-    private let confirmButton = UIButton()
     private let _selectedIndex = BehaviorRelay<Int>(value: 0)
-    private let _didTappedCancelButton = PublishRelay<Void>()
-    private let _didTappedConfirmButton = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
 }
 
@@ -147,18 +143,6 @@ private extension DTBottomView {
             .bind(to: _selectedIndex)
             .disposed(by: disposeBag)
         
-        cancelButton
-            .rx
-            .tap
-            .bind(to: _didTappedCancelButton)
-            .disposed(by: disposeBag)
-        
-        confirmButton
-            .rx
-            .tap
-            .bind(to: _didTappedConfirmButton)
-            .disposed(by: disposeBag)
-        
         leftButton
             .rx
             .tap
@@ -178,20 +162,11 @@ private extension DTBottomView {
             .disposed(by: disposeBag)
     }
     
-    func bindInputOutput() {
+    func bind(viewModel: DTBottomViewModelPrototype) {
         _selectedIndex
-            .map { DTBottomOutput.selectedIndex(index: $0) }
-            .bind(to: output)
-            .disposed(by: disposeBag)
-        
-        _didTappedCancelButton
-            .map { DTBottomOutput.didTappedCancelButton }
-            .bind(to: output)
-            .disposed(by: disposeBag)
-        
-        _didTappedConfirmButton
-            .map { DTBottomOutput.didTappedConfirmButton }
-            .bind(to: output)
+            .subscribe(onNext: { idx in
+                viewModel.input.mapToChipMoney(idx)
+            })
             .disposed(by: disposeBag)
     }
 }
