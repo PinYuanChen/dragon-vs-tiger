@@ -64,8 +64,7 @@ extension DTPlayViewModel: DTPlayViewModelInput {
         }
         _playOptions.accept(options)
     }
-    
-    
+        
     func getSelectedPlay(selectPlay play: SelectedPlayModel) {
         let betMoney = chipItems[_selectedChipIndex.value].number
         let playReadyBetMoney = readyBet.filter {
