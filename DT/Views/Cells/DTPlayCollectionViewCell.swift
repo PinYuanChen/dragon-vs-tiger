@@ -4,7 +4,6 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-
 enum DTPlayCollecitonCellInput {
     case setPlayOptionInfo(playModel: DTPlayModel)
     case updateSelectedPlayModels(models: [UpdateSelectedPlayModel])
@@ -14,14 +13,6 @@ enum DTPlayCollecitonCellInput {
 class DTPlayCollectionViewCell: UICollectionViewCell {
     
     let input = PublishRelay<DTPlayCollecitonCellInput>()
-    
-    struct Input {
-        let setPlayOptionInfo = PublishRelay<DTPlayModel>()
-        let updateSelectedPlayModels = PublishRelay<[UpdateSelectedPlayModel]>()
-        let clearAllBetInfo = PublishRelay<Void>()
-    }
-    
-    struct Output { }
     
     var reuseDisposeBag = DisposeBag()
     
