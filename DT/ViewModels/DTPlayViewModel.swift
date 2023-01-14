@@ -16,7 +16,7 @@ protocol DTPlayViewModelOutput {
 
 protocol DTPlayViewModelInput {
     func getPlayOptions()
-    func getSelectedChipIndex(_ index: Int)
+    func getCurrentChipMoney(_ money: Int)
     func getSelectedPlay(selectPlay play: SelectedPlayModel)
     func cancelReadyBet()
     func confirmReadyBet()
@@ -28,15 +28,13 @@ class DTPlayViewModel: DTPlayViewModelPrototype {
     var output: DTPlayViewModelOutput { self }
     var input: DTPlayViewModelInput { self }
 
-    private let _selectedChipIndex = BehaviorRelay<Int>(value: 0)
-    private let chipItems = ChipType.allCases
     private var hadBet = [PlayBetInfoModel]()
     private var readyBet = [PlayBetInfoModel]()
+    private var betMoney = 0
     private let _playOptions = PublishRelay<DTPlayCateModel>()
     private let _clearAllBet = PublishRelay<Void>()
     private let _clearAllBetWithoutAnimation = PublishRelay<Void>()
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]?>(value: nil)
-    private let disposeBag = DisposeBag()
 }
 
 // MARK: - Output
@@ -64,9 +62,12 @@ extension DTPlayViewModel: DTPlayViewModelInput {
         }
         _playOptions.accept(options)
     }
+    
+    func getCurrentChipMoney(_ money: Int) {
+        betMoney = money
+    }
         
     func getSelectedPlay(selectPlay play: SelectedPlayModel) {
-        let betMoney = chipItems[_selectedChipIndex.value].number
         let playReadyBetMoney = readyBet.filter {
             $0.playCateCode == play.cateCode &&
             $0.playCode == play.playCode
@@ -80,10 +81,6 @@ extension DTPlayViewModel: DTPlayViewModelInput {
                                             hadBet: false)
         readyBet.append(betInfoModel)
         reloadBetInfo()
-    }
-    
-    func getSelectedChipIndex(_ index: Int) {
-        _selectedChipIndex.accept(index)
     }
     
     func cancelReadyBet() {

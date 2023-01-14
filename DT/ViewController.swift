@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     
     let viewModel = DTViewModel()
     let playViewModel = DTPlayViewModel()
+    let bottomViewModel = DTBottomViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,7 @@ class ViewController: UIViewController {
         bind()
         bind(viewModel: viewModel)
         bind(playViewModel: playViewModel)
+        bind(bottomViewModel: bottomViewModel)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,7 +39,7 @@ class ViewController: UIViewController {
     private let countDownView = DTCountDownView()
     private let animationView = DTAnimationView()
     private lazy var playView = DTPlayView(playViewModel)
-    private let bottomView = DTBottomView()
+    private lazy var bottomView = DTBottomView(bottomViewModel)
     private var timer: Timer?
     private var countDownNum = 0
     private let disposeBag = DisposeBag()
@@ -128,17 +130,20 @@ private extension ViewController {
             .accept(.enableBetting(enable: true))
         
         bottomView
-            .output
+            .cancelButton
+            .rx.tap
             .withUnretained(playViewModel)
-            .subscribe(onNext: { owner, type in
-                switch type {
-                case .selectedIndex(index: let index):
-                    owner.input.getSelectedChipIndex(index)
-                case .didTappedCancelButton:
-                    owner.input.cancelReadyBet()
-                case .didTappedConfirmButton:
-                    owner.input.confirmReadyBet()
-                }
+            .subscribe(onNext: { owner, _ in
+                owner.input.cancelReadyBet()
+            })
+            .disposed(by: disposeBag)
+        
+        bottomView
+            .confirmButton
+            .rx.tap
+            .withUnretained(playViewModel)
+            .subscribe(onNext: { owner, _ in
+                owner.input.confirmReadyBet()
             })
             .disposed(by: disposeBag)
         
@@ -206,6 +211,17 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.animationView.input.accept(.enableBetting(enable: true))
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func bind(bottomViewModel: DTBottomViewModelPrototype) {
+        bottomViewModel
+            .output
+            .chipMoney
+            .withUnretained(playViewModel)
+            .subscribe(onNext: { owner, chipMoney in
+                owner.input.getCurrentChipMoney(chipMoney)
             })
             .disposed(by: disposeBag)
     }
