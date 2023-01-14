@@ -35,7 +35,6 @@ class DTPlayViewModel: DTPlayViewModelPrototype {
     private let _clearAllBet = PublishRelay<Void>()
     private let _clearAllBetWithoutAnimation = PublishRelay<Void>()
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]?>(value: nil)
-    private let disposeBag = DisposeBag()
 }
 
 // MARK: - Output
