@@ -4,15 +4,6 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-enum DTPlayViewInput {
-    case updateSelectedPlayModels(model: [UpdateSelectedPlayModel])
-    case setInteractionEnabled(enabled: Bool)
-}
-
-enum DTPlayViewOutput {
-    case selectedPlay(selectedModel: SelectedPlayModel)
-}
-
 class DTPlayView: UIView {
     
     required init(_ viewModel: DTPlayViewModelPrototype) {
