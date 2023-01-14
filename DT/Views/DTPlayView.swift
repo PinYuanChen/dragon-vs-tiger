@@ -87,12 +87,11 @@ private extension DTPlayView {
             })
             .disposed(by: disposeBag)
         
-        _isInteractionEnabled
-            .withUnretained(self)
-            .subscribe(onNext: { owner, enabled in
-                owner.isUserInteractionEnabled = enabled
-                owner.alpha = enabled ? 1 : 0.5
-            })
+        rx
+            .observe(\.isUserInteractionEnabled)
+            .map { $0 ? 1 : 0.5 }
+            .asDriver(onErrorJustReturn: 1)
+            .drive(rx.alpha)
             .disposed(by: disposeBag)
     }
     
@@ -109,6 +108,12 @@ private extension DTPlayView {
             .bind(to: _clearAllBet)
             .disposed(by: disposeBag)
         
+        viewModel
+            .output
+            .updateSelectedPlayModels
+            .bind(to: _updateSelectedPlayModels)
+            .disposed(by: disposeBag)
+        
         _selectedPlay
             .subscribe(onNext: { selectPlay in
                 viewModel.input.getSelectedPlay(selectPlay: selectPlay)
@@ -117,26 +122,6 @@ private extension DTPlayView {
         
         viewModel.input.getPlayOptions()
     }
-    
-    /*
-    func bindInputOutput() {
-        input
-            .withUnretained(self)
-            .subscribe(onNext: { owner, type in
-                switch type {
-                case .setPlayOptions(options: let options):
-                    owner._playOptions.accept(options)
-                case .updateSelectedPlayModels(model: let model):
-                    owner._updateSelectedPlayModels.accept(model)
-                case .setInteractionEnabled(enabled: let enabled):
-                    owner._isInteractionEnabled.accept(enabled)
-                case .clearAllBet:
-                    owner._clearAllBet.accept(())
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-     */
 }
 
 extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -180,9 +165,6 @@ extension DTPlayView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSo
             })
             .disposed(by: cell.reuseDisposeBag)
         
-        _isInteractionEnabled
-            .bind(to: cell.rx.isUserInteractionEnabled)
-            .disposed(by: cell.reuseDisposeBag)
         return cell
     }
 }

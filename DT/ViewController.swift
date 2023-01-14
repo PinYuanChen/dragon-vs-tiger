@@ -179,7 +179,7 @@ private extension ViewController {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 // tmp
-//                owner.playView.input.accept(.setInteractionEnabled(enabled: true))
+                owner.playView.isUserInteractionEnabled = true
                 
                 if owner.timer == nil {
                     owner.countDownNum = 0
@@ -223,7 +223,8 @@ private extension ViewController {
             invalidate()
             animationView.input.accept(.beginAnimation)
             animationView.input.accept(.enableBetting(enable: false))
-//            playView.input.accept(.setInteractionEnabled(enabled: false))
+            
+            playView.isUserInteractionEnabled = false
             playViewModel.input.cancelReadyBet()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
