@@ -7,6 +7,7 @@ import RxCocoa
 class DTPlayView: UIView {
     
     required init(_ viewModel: DTPlayViewModelPrototype) {
+        self.viewModel = viewModel
         super.init(frame: .zero)
         setupUI()
         bind()
@@ -17,6 +18,7 @@ class DTPlayView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let viewModel: DTPlayViewModelPrototype
     private let _playOptions = BehaviorRelay<DTPlayCateModel?>(value: nil)
     private let _updateSelectedPlayModels = BehaviorRelay<[UpdateSelectedPlayModel]>(value: [])
     private let _selectedPlay = PublishRelay<SelectedPlayModel>()
@@ -69,6 +71,13 @@ private extension DTPlayView {
             })
             .disposed(by: disposeBag)
         
+        _selectedPlay
+            .withUnretained(self)
+            .subscribe(onNext: { owner, selectPlay in
+                owner.viewModel.input.getSelectedPlay(selectPlay: selectPlay)
+            })
+            .disposed(by: disposeBag)
+        
         collectionView
             .rx
             .itemSelected
@@ -112,12 +121,6 @@ private extension DTPlayView {
             .output
             .updateSelectedPlayModels
             .bind(to: _updateSelectedPlayModels)
-            .disposed(by: disposeBag)
-        
-        _selectedPlay
-            .subscribe(onNext: { selectPlay in
-                viewModel.input.getSelectedPlay(selectPlay: selectPlay)
-            })
             .disposed(by: disposeBag)
         
         viewModel.input.getPlayOptions()
