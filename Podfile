@@ -7,7 +7,7 @@ target 'DT' do
 
   # Pods for DT
   pod 'UIAdapter'
-  pod 'SnapKit', '4.2.0'
+  pod 'SnapKit', '5.6.0'
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
   pod 'SwiftLint'

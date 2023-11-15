@@ -5,14 +5,14 @@ PODS:
   - RxRelay (6.5.0):
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
-  - SnapKit (4.2.0)
+  - SnapKit (5.6.0)
   - SwiftLint (0.50.3)
   - UIAdapter (1.2.0)
 
 DEPENDENCIES:
   - RxCocoa (= 6.5.0)
   - RxSwift (= 6.5.0)
-  - SnapKit (= 4.2.0)
+  - SnapKit (= 5.6.0)
   - SwiftLint
   - UIAdapter
 
@@ -29,10 +29,10 @@ SPEC CHECKSUMS:
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
-  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   SwiftLint: 77f7cb2b9bb81ab4a12fcc86448ba3f11afa50c6
   UIAdapter: e11dd63448d651786227fd197965dc738743a83b
 
-PODFILE CHECKSUM: 83c506b245f2caa780f6901ac1238414a87ea43a
+PODFILE CHECKSUM: ebf264c4b418fc38143489fc6a9d075ad6d7c934
 
 COCOAPODS: 1.11.3

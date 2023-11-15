@@ -24,13 +24,13 @@
 #if os(iOS) || os(tvOS)
     import UIKit
 #endif
+
     
+@available(iOS 8.0, *)
+public extension ConstraintLayoutSupport {
     
-@available(iOS 9.0, OSX 10.11, *)
-public extension ConstraintLayoutGuide {
-    
-    public var snp: ConstraintLayoutGuideDSL {
-        return ConstraintLayoutGuideDSL(guide: self)
+    var snp: ConstraintLayoutSupportDSL {
+        return ConstraintLayoutSupportDSL(support: self)
     }
     
 }
