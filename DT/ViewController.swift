@@ -195,6 +195,8 @@ private extension ViewController {
                         userInfo: nil,
                         repeats: true
                     )
+                    
+                    RunLoop.current.add(owner.timer!, forMode: .common)
                 }
             })
             .disposed(by: disposeBag)
